@@ -1,1 +1,454 @@
-# nhicks-lang.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Equity | The All-Weather 33% Strategy</title>
+    
+    <!-- External Assets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0b0f1a;
+            --card-bg: #161e2d;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --gold: #fbbf24;
+            --cash: #10b981;
+            --equity: #3b82f6;
+            --accent: #6366f1;
+            --glass: rgba(22, 30, 45, 0.7);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        h1, h2, h3 { font-weight: 900; letter-spacing: -1px; }
+        p { color: var(--text-dim); }
+
+        /* Tooltips */
+        .tooltip-text {
+            border-bottom: 1px dotted var(--accent);
+            cursor: help;
+            position: relative;
+            color: var(--text-main);
+            transition: color 0.2s;
+        }
+        .tooltip-text:hover { color: var(--accent); }
+        .tooltip-text::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--card-bg);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 400;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 50;
+        }
+        .tooltip-text:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Navigation */
+        nav {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+        .logo span { color: var(--gold); }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 8rem 1rem 4rem;
+            background: radial-gradient(circle at top, #1e293b 0%, #0b0f1a 80%);
+        }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; margin-bottom: 1.5rem; }
+        .hero p { font-size: 1.25rem; max-width: 600px; margin: 0 auto; }
+
+        /* Interactive Calculator Hub */
+        .hub-container {
+            max-width: 1100px;
+            margin: -2rem auto 6rem;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+        }
+
+        .calc-box {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 40px 100px -20px rgba(0,0,0,0.7);
+        }
+
+        .input-wrap label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
+        .input-wrap input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--accent);
+            color: white;
+            font-size: 3.5rem;
+            font-weight: 800;
+            width: 100%;
+            outline: none;
+            margin-bottom: 3rem;
+            padding: 0.5rem 0;
+        }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .res-item i { font-size: 1.2rem; margin-bottom: 0.5rem; display: block; }
+        .res-item span { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
+        .res-item div { font-size: 1.4rem; font-weight: 800; margin-top: 0.5rem; }
+
+        .chart-mini {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Asset Breakdown */
+        .section-padding { padding: 8rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        
+        .asset-card {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 2rem;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .asset-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+        .asset-card i { font-size: 2.5rem; margin-bottom: 1.5rem; }
+
+        /* Seasons Table */
+        .seasons-wrap { overflow-x: auto; margin-top: 3rem; }
+        .seasons-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+        .seasons-table th, .seasons-table td { padding: 1.5rem 2rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .seasons-table th { background: rgba(255,255,255,0.03); font-size: 0.8rem; color: var(--accent); }
+        .tag { padding: 0.3rem 0.8rem; border-radius: 2rem; font-size: 0.75rem; font-weight: bold; background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+        /* Dynamic Backtesting Controls */
+        .backtest-controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 3rem 0 2rem;
+        }
+        .backtest-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-dim);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .backtest-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+        .backtest-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .history-box {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 2.5rem;
+        }
+
+        /* Rebalancing Steps */
+        .step-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 4rem; }
+        .step-card {
+            counter-increment: step;
+            background: var(--card-bg);
+            padding: 3rem 2rem;
+            border-radius: 1.5rem;
+            position: relative;
+        }
+        .step-card::before {
+            content: counter(step);
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            background: var(--accent);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        footer { text-align: center; padding: 6rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        @media (max-width: 900px) {
+            .hub-container { grid-template-columns: 1fr; }
+            .input-wrap input { font-size: 2.5rem; }
+            .tooltip-text::after { white-space: normal; width: 200px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Rock<span>.</span>Paper<span>.</span>Equity</div>
+        <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.5;">STRATEGY v1.0</div>
+    </nav>
+
+    <header class="hero">
+        <h1>Simplicity is the <br>Ultimate Hedge.</h1>
+        <p>A resilient, three-pillar portfolio designed to protect and grow your wealth in any economic climate.</p>
+    </header>
+
+    <!-- Interactive Hub -->
+    <section class="hub-container">
+        <div class="calc-box">
+            <div class="input-wrap">
+                <label>TOTAL INVESTMENT CAPITAL</label>
+                <input type="number" id="totalAmt" value="30000" oninput="runCalc()">
+            </div>
+            <div class="res-grid">
+                <div class="res-item">
+                    <i class="fa-solid fa-gem" style="color:var(--gold)"></i>
+                    <span>Rock (Gold)</span>
+                    <div id="resGold" style="color:var(--gold)">$10,000</div>
+                </div>
+                <div class="res-item">
+                    <i class="fa-solid fa-money-bill-1-wave" style="color:var(--cash)"></i>
+                    <span>Paper (Cash)</span>
+                    <div id="resCash" style="color:var(--cash)">$10,000</div>
+                </div>
+                <div class="res-item">
+                    <i class="fa-solid fa-chart-line" style="color:var(--equity)"></i>
+                    <span>Equity (Stocks)</span>
+                    <div id="resEquity" style="color:var(--equity)">$10,000</div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-mini">
+            <canvas id="donutChart"></canvas>
+        </div>
+    </section>
+
+    <!-- The Assets -->
+    <section class="section-padding">
+        <div class="grid-3">
+            <div class="asset-card">
+                <i class="fa-solid fa-gem" style="color:var(--gold)"></i>
+                <h3>The Rock</h3>
+                <p style="margin-top: 1rem;">Gold acts as your insurance. It thrives during currency devaluation, high <span class="tooltip-text" data-tip="When the purchasing power of money falls, making goods more expensive.">inflation</span>, and periods of global geopolitical crisis.</p>
+            </div>
+            <div class="asset-card">
+                <i class="fa-solid fa-money-bill-1-wave" style="color:var(--cash)"></i>
+                <h3>The Paper</h3>
+                <p style="margin-top: 1rem;">Cash is your optionality. It provides stability during <span class="tooltip-text" data-tip="A general decline in prices, often causing severe economic slowdowns.">deflation</span> and the liquid <span class="tooltip-text" data-tip="Cash held in reserve to buy assets when prices drop heavily.">"dry powder"</span> needed to buy assets when they are cheap.</p>
+            </div>
+            <div class="asset-card">
+                <i class="fa-solid fa-chart-line" style="color:var(--equity)"></i>
+                <h3>The Equity</h3>
+                <p style="margin-top: 1rem;">Stocks are your growth engine. They capture the long-term productivity and innovation of the world's most successful companies.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- History & Dynamic Backtesting -->
+    <section class="section-padding" style="background: rgba(99, 102, 241, 0.02);">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <h2>The Smooth Ride</h2>
+            <p style="margin-top: 1rem;">By blending <span class="tooltip-text" data-tip="Investments that don't move up or down at the same time (e.g., Gold vs. Stocks).">non-correlated assets</span>, you eliminate the violent <span class="tooltip-text" data-tip="The peak-to-trough decline of an investment during a specific period.">drawdowns</span> of a 100% stock portfolio while preserving steady, long-term compounding power.</p>
+        </div>
+
+        <div class="backtest-controls" id="controls">
+            <button class="backtest-btn active" onclick="updateChart('full', this)">Full History</button>
+            <button class="backtest-btn" onclick="updateChart('dotcom', this)">2000 Dot-Com Crash</button>
+            <button class="backtest-btn" onclick="updateChart('gfc', this)">2008 Financial Crisis</button>
+            <button class="backtest-btn" onclick="updateChart('covid', this)">2020 Pandemic</button>
+        </div>
+
+        <div class="history-box">
+            <canvas id="historyChart" style="max-height: 400px;"></canvas>
+        </div>
+    </section>
+
+    <!-- Rebalancing Guide -->
+    <section class="section-padding" style="background: var(--accent); border-radius: 4rem; margin-bottom: 4rem;">
+        <h2 style="text-align: center; color: white;">The Rebalancing Protocol</h2>
+        <div class="step-grid">
+            <div class="step-card">
+                <h4 style="color: white;">Set Your Date</h4>
+                <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">Choose one day a year (like your birthday or Jan 1st) to look at your portfolio. No more, no less.</p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: white;">Identify the Winner</h4>
+                <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">If Stocks had a 50% gain, they might now represent 45% of your total wealth. This is your "Winner."</p>
+            </div>
+            <div class="step-card">
+                <h4 style="color: white;">Reset the Weights</h4>
+                <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">Sell the Winner and buy the asset that is currently lagging until all three are back to exactly 33.3%.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>ROCKPAPEREQUITY.COM &copy; 2026</p>
+        <p style="font-size: 0.7rem; margin-top: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.4;">
+            Disclaimer: This website is for educational purposes only. Investing involves risk of loss. Historical backtests are simulated conceptual models. Always consult with a certified financial planner.
+        </p>
+    </footer>
+
+    <script>
+        // Calculator Logic
+        function runCalc() {
+            const total = document.getElementById('totalAmt').value || 0;
+            const split = (total / 3).toFixed(2);
+            const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+            
+            document.getElementById('resGold').innerText = formatter.format(split);
+            document.getElementById('resCash').innerText = formatter.format(split);
+            document.getElementById('resEquity').innerText = formatter.format(split);
+        }
+
+        // Donut Chart
+        const dCtx = document.getElementById('donutChart').getContext('2d');
+        new Chart(dCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Rock', 'Paper', 'Equity'],
+                datasets: [{
+                    data: [33.3, 33.3, 33.3],
+                    backgroundColor: ['#fbbf24', '#10b981', '#3b82f6'],
+                    hoverOffset: 15,
+                    borderWidth: 0
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, cutout: '70%' }
+        });
+
+        // Dynamic Backtesting Data (Conceptual benchmarks for education)
+        const backtestData = {
+            full: {
+                labels: ['2000', '2004', '2008', '2012', '2016', '2020', '2024'],
+                strategy: [100, 135, 150, 195, 250, 320, 410],
+                market: [100, 85, 60, 135, 240, 310, 490]
+            },
+            dotcom: {
+                labels: ['Jan 2000', 'Jan 2001', 'Jan 2002', 'Jan 2003'],
+                strategy: [100, 102, 105, 112],
+                market: [100, 89, 75, 60] // S&P major drawdown
+            },
+            gfc: {
+                labels: ['Oct 2007', 'Oct 2008', 'Mar 2009', 'Dec 2009'],
+                strategy: [100, 96, 92, 108], // Buffered by Gold & Cash
+                market: [100, 60, 45, 75] // Massive stock crash
+            },
+            covid: {
+                labels: ['Jan 2020', 'Feb 2020', 'Mar 2020', 'Jun 2020'],
+                strategy: [100, 98, 95, 105], // Barely flinched
+                market: [100, 92, 70, 95] // V-shaped crash
+            }
+        };
+
+        // Initialize History Chart
+        const hCtx = document.getElementById('historyChart').getContext('2d');
+        let myHistoryChart = new Chart(hCtx, {
+            type: 'line',
+            data: {
+                labels: backtestData.full.labels,
+                datasets: [
+                    {
+                        label: '33/33/33 Strategy',
+                        data: backtestData.full.strategy,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: '100% Stock Market',
+                        data: backtestData.full.market,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'transparent',
+                        fill: false,
+                        tension: 0.4,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'top', labels: { color: '#94a3b8', font: { family: 'Inter', size: 12 } } },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+
+        // Function to handle chart updates via buttons
+        function updateChart(period, btnElement) {
+            // Update active button styling
+            const buttons = document.querySelectorAll('.backtest-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // Update chart data
+            myHistoryChart.data.labels = backtestData[period].labels;
+            myHistoryChart.data.datasets[0].data = backtestData[period].strategy;
+            myHistoryChart.data.datasets[1].data = backtestData[period].market;
+            myHistoryChart.update();
+        }
+
+        runCalc();
+    </script>
+</body>
+</html>
