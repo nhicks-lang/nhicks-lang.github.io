@@ -29,7 +29,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nav / Header Section */
         header {
             background-color: var(--surface-color);
             padding: 4rem 2rem;
@@ -47,9 +46,7 @@
             transition: color 0.2s ease;
         }
 
-        .back-link:hover {
-            color: #111;
-        }
+        .back-link:hover { color: #111; }
 
         h1 {
             font-size: 2.75rem;
@@ -73,7 +70,6 @@
             padding: 3rem 2rem;
         }
 
-        /* Main Layout */
         .layout-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -84,7 +80,6 @@
             .layout-grid { grid-template-columns: 1fr; }
         }
 
-        /* Panels */
         .panel {
             background: var(--surface-color);
             padding: 2rem;
@@ -103,7 +98,23 @@
             display: inline-block;
         }
 
-        /* Forms & Inputs */
+        /* Widget Container Styling */
+        .live-ticker-container {
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            min-height: 420px;
+        }
+        
+        .ticker-instruction {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
         .input-group {
             display: flex;
             align-items: center;
@@ -159,7 +170,6 @@
             color: var(--text-light);
         }
 
-        /* Buttons */
         .btn {
             display: block;
             width: 100%;
@@ -176,22 +186,8 @@
             margin-top: 1.5rem;
         }
 
-        .btn:hover {
-            background-color: #1b5e20;
-        }
+        .btn:hover { background-color: #1b5e20; }
 
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            margin-top: 1rem;
-        }
-
-        .btn-outline:hover {
-            background-color: var(--bg-color);
-        }
-
-        /* Results Display */
         .result-box {
             background-color: var(--highlight-bg);
             border: 1px solid var(--highlight-border);
@@ -214,15 +210,6 @@
             margin: 0;
         }
 
-        /* Status / Error text */
-        #api-status {
-            font-size: 0.85rem;
-            text-align: center;
-            margin-top: 0.5rem;
-            color: var(--text-light);
-        }
-
-        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -240,15 +227,8 @@
             font-weight: 600;
         }
 
-        td.text-right, th.text-right {
-            text-align: right;
-        }
-
-        .optimal-row {
-            background-color: var(--highlight-bg);
-            font-weight: 600;
-        }
-
+        td.text-right, th.text-right { text-align: right; }
+        .optimal-row { background-color: var(--highlight-bg); font-weight: 600; }
         .negative-val { color: #d32f2f; }
         .positive-val { color: #2e7d32; }
 
@@ -261,7 +241,6 @@
             border-top: 1px solid var(--border-color);
             margin-top: 4rem;
         }
-
     </style>
 </head>
 <body>
@@ -273,24 +252,55 @@
     </header>
 
     <main class="container">
-        
         <div class="layout-grid">
             
-            <!-- Left Column: Data & Inputs -->
             <div class="panel">
                 <h2 class="panel-title">Yield Curve Data</h2>
-                <p style="font-size: 0.95rem; color: var(--text-light); margin-top: 0;">Enter current Treasury yields manually, or fetch the latest end-of-day data automatically from the U.S. Treasury.</p>
+                
+                <p class="ticker-instruction">1. Check the live rates on the table below.</p>
+                
+                <!-- Live TradingView Market Data Table (TVC Symbols) -->
+                <div class="live-ticker-container">
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+                        {
+                        "width": "100%",
+                        "height": 420,
+                        "symbolsGroups": [
+                          {
+                            "name": "US Treasury Yield Curve",
+                            "originalName": "Bonds",
+                            "symbols": [
+                              { "name": "TVC:US01MY", "displayName": "1 Month" },
+                              { "name": "TVC:US03MY", "displayName": "3 Month" },
+                              { "name": "TVC:US06MY", "displayName": "6 Month" },
+                              { "name": "TVC:US01Y", "displayName": "1 Year" },
+                              { "name": "TVC:US02Y", "displayName": "2 Year" },
+                              { "name": "TVC:US03Y", "displayName": "3 Year" },
+                              { "name": "TVC:US05Y", "displayName": "5 Year" },
+                              { "name": "TVC:US10Y", "displayName": "10 Year" }
+                            ]
+                          }
+                        ],
+                        "showSymbolLogo": false,
+                        "isTransparent": true,
+                        "colorTheme": "light",
+                        "locale": "en"
+                        }
+                        </script>
+                    </div>
+                </div>
+
+                <p class="ticker-instruction">2. Enter the current yields to calculate.</p>
 
                 <div id="inputs-container">
-                    <!-- JavaScript will populate inputs here to keep HTML clean -->
+                    <!-- JavaScript will populate inputs here -->
                 </div>
 
                 <button class="btn" onclick="calculateDurations()">Calculate Strategy</button>
-                <button class="btn btn-outline" onclick="fetchTreasuryData()">📥 Fetch Live U.S. Treasury Data</button>
-                <div id="api-status">Ready.</div>
             </div>
 
-            <!-- Right Column: Results & Explanation -->
             <div class="panel">
                 <h2 class="panel-title">Analysis</h2>
                 
@@ -332,32 +342,27 @@
                 </div>
 
             </div>
-
         </div>
     </main>
 
     <footer>
         <p>RockPaperEquity.com does not constitute professional financial advice. Always do your own research.</p>
-        <p>Market data provided by the official API at FiscalData.Treasury.gov.</p>
     </footer>
 
     <script>
-        // Configuration mapping maturities to mathematical years
-        // Note: 1 Month is set to 0 years as the baseline metric
         const MATURITIES = [
-            { id: '1mo', label: '1 Month', years: 0, api_key: 'bc_1month', default: 5.30 },
-            { id: '3mo', label: '3 Month', years: 0.25, api_key: 'bc_3month', default: 5.35 },
-            { id: '6mo', label: '6 Month', years: 0.5, api_key: 'bc_6month', default: 5.38 },
-            { id: '1yr', label: '1 Year', years: 1.0, api_key: 'bc_1year', default: 5.15 },
-            { id: '2yr', label: '2 Year', years: 2.0, api_key: 'bc_2year', default: 4.85 },
-            { id: '3yr', label: '3 Year', years: 3.0, api_key: 'bc_3year', default: 4.60 },
-            { id: '5yr', label: '5 Year', years: 5.0, api_key: 'bc_5year', default: 4.45 },
-            { id: '10yr', label: '10 Year', years: 10.0, api_key: 'bc_10year', default: 4.40 }
+            { id: '1mo', label: '1 Month', years: 0, default: 5.30 },
+            { id: '3mo', label: '3 Month', years: 0.25, default: 5.35 },
+            { id: '6mo', label: '6 Month', years: 0.5, default: 5.38 },
+            { id: '1yr', label: '1 Year', years: 1.0, default: 5.15 },
+            { id: '2yr', label: '2 Year', years: 2.0, default: 4.85 },
+            { id: '3yr', label: '3 Year', years: 3.0, default: 4.60 },
+            { id: '5yr', label: '5 Year', years: 5.0, default: 4.45 },
+            { id: '10yr', label: '10 Year', years: 10.0, default: 4.40 }
         ];
 
-        const BASIS_POINT_RULE = 0.20; // 20 basis points per year
+        const BASIS_POINT_RULE = 0.20; 
 
-        // Render input fields on page load
         function renderInputs() {
             const container = document.getElementById('inputs-container');
             MATURITIES.forEach(mat => {
@@ -377,51 +382,8 @@
             });
         }
 
-        // Fetch Data from US Treasury API
-        async function fetchTreasuryData() {
-            const statusText = document.getElementById('api-status');
-            statusText.style.color = 'var(--text-main)';
-            statusText.innerText = 'Fetching latest data from U.S. Treasury...';
-
-            try {
-                // Fetch the single most recent day's yield curve
-                const url = 'https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/yield_curve?sort=-record_date&page[size]=1';
-                const response = await fetch(url);
-                const json = await response.json();
-
-                if (json.data && json.data.length > 0) {
-                    const latestData = json.data[0];
-                    const recordDate = new Date(latestData.record_date).toLocaleDateString();
-
-                    // Populate fields
-                    MATURITIES.forEach(mat => {
-                        const val = latestData[mat.api_key];
-                        if (val) {
-                            document.getElementById(`input-${mat.id}`).value = parseFloat(val).toFixed(2);
-                        }
-                    });
-
-                    statusText.style.color = 'var(--paper-color)';
-                    statusText.innerText = `Success: Loaded yield curve for ${recordDate}`;
-                    
-                    // Auto-calculate after fetch
-                    calculateDurations();
-                } else {
-                    throw new Error("No data returned from API.");
-                }
-
-            } catch (error) {
-                statusText.style.color = '#d32f2f';
-                statusText.innerText = 'Error fetching data. Treasury API might be temporarily down. You can enter values manually.';
-                console.error(error);
-            }
-        }
-
-        // Perform the mathematical analysis
         function calculateDurations() {
             const results = [];
-            
-            // Get baseline yield (1 Month / 0 Years)
             const baseYieldInput = document.getElementById(`input-${MATURITIES[0].id}`).value;
             const baseYield = parseFloat(baseYieldInput);
 
@@ -431,23 +393,15 @@
             }
 
             let bestMaturity = MATURITIES[0];
-            let maxPremium = 0; // Starts at 0, representing the baseline
+            let maxPremium = 0; 
 
             MATURITIES.forEach(mat => {
                 const actualYield = parseFloat(document.getElementById(`input-${mat.id}`).value) || 0;
-                
-                // Formula: Baseline + (Years * 0.20)
                 const requiredYield = baseYield + (mat.years * BASIS_POINT_RULE);
                 const premium = actualYield - requiredYield;
 
-                results.push({
-                    ...mat,
-                    actualYield,
-                    requiredYield,
-                    premium
-                });
+                results.push({ ...mat, actualYield, requiredYield, premium });
 
-                // Update best if premium is strictly higher than previous max
                 if (premium > maxPremium) {
                     maxPremium = premium;
                     bestMaturity = mat;
@@ -457,12 +411,10 @@
             renderResults(results, bestMaturity);
         }
 
-        // Render the results into the UI table
         function renderResults(results, bestMaturity) {
             document.getElementById('instruction-container').style.display = 'none';
             document.getElementById('result-container').style.display = 'block';
 
-            // Update Best Duration Box
             document.getElementById('best-duration-display').innerText = bestMaturity.label;
             
             if (bestMaturity.years === 0) {
@@ -471,7 +423,6 @@
                 document.getElementById('best-duration-subtext').innerText = `Extending to ${bestMaturity.label} justifies the lock-up period based on the 20bp rule.`;
             }
 
-            // Populate Table
             const tbody = document.querySelector('#results-table tbody');
             tbody.innerHTML = '';
 
@@ -479,7 +430,6 @@
                 const isOptimal = res.id === bestMaturity.id;
                 const rowClass = isOptimal ? 'optimal-row' : '';
                 
-                // Formatting Premium text
                 let premiumText = res.premium.toFixed(2) + '%';
                 let premiumClass = '';
                 if (res.premium > 0 && res.years > 0) {
@@ -489,7 +439,6 @@
                     premiumClass = 'negative-val';
                 }
 
-                // Baseline required yield formatting
                 const requiredDisplay = res.years === 0 ? 'Baseline' : res.requiredYield.toFixed(2) + '%';
                 const premiumDisplay = res.years === 0 ? '--' : premiumText;
 
@@ -505,9 +454,7 @@
             });
         }
 
-        // Initialize empty fields on load
         window.onload = renderInputs;
-
     </script>
 </body>
 </html>
