@@ -928,29 +928,34 @@ body {
 </header>
 
 <!-- TICKER -->
-<div class="ticker-strip">
-  <div class="ticker-inner">
-    <span class="ticker-item">Gold (XAU) <span class="ticker-up">↑ 2.4%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">S&amp;P 500 (SPY) <span class="ticker-up">↑ 0.9%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">T-Bill Yield <span class="ticker-up">5.1%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">Inflation (CPI) <span class="ticker-down">↓ 3.2%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">Your Portfolio <span class="ticker-up">All Seasons ✓</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">Gold (XAU) <span class="ticker-up">↑ 2.4%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">S&amp;P 500 (SPY) <span class="ticker-up">↑ 0.9%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">T-Bill Yield <span class="ticker-up">5.1%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">Inflation (CPI) <span class="ticker-down">↓ 3.2%</span></span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">Your Portfolio <span class="ticker-up">All Seasons ✓</span></span>
+<div class="ticker-strip" style="padding: 0; border-bottom: 2px solid var(--black);">
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+    "symbols": [
+      {
+        "proName": "FOREXCOM:SPXUSD",
+        "title": "S&P 500"
+      },
+      {
+        "proName": "TVC:US03MY",
+        "title": "3-MO T-BILL"
+      },
+      {
+        "proName": "OANDA:XAUUSD",
+        "title": "GOLD"
+      }
+    ],
+    "showSymbolLogo": false,
+    "isTransparent": true,
+    "displayMode": "regular",
+    "colorTheme": "dark",
+    "locale": "en"
+    }
+    </script>
   </div>
-</div>
+  </div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1482,68 +1487,6 @@ function updateChart(period, btn) {
 }
 
 runCalc();
-</script>
-  <script>
-  async function fetchLiveTickerData() {
-    // Symbols: S&P 500 (^GSPC), 3-Month T-Bill (^IRX), Gold (GC=F)
-    const symbols = '^GSPC,^IRX,GC=F'; 
-    // Using a public CORS proxy to allow client-side fetching
-    const url = `https://corsproxy.io/?https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      const quotes = data.quoteResponse.result;
-      
-      // Extract the specific assets
-      const sp500 = quotes.find(q => q.symbol === '^GSPC');
-      const tbill3m = quotes.find(q => q.symbol === '^IRX');
-      const gold = quotes.find(q => q.symbol === 'GC=F');
-      
-      // Helper function to build the HTML string for each item
-      const formatItem = (name, quote, isYield = false) => {
-        if (!quote) return '';
-        
-        // Yields are formatted as percentages, equities/commodities as standard decimals
-        const price = isYield ? quote.regularMarketPrice.toFixed(2) + '%' : quote.regularMarketPrice.toFixed(2);
-        const change = quote.regularMarketChange.toFixed(2);
-        const percent = quote.regularMarketChangePercent.toFixed(2) + '%';
-        
-        // Apply your existing CSS color classes
-        const colorClass = change >= 0 ? 'ticker-up' : 'ticker-down';
-        const sign = change >= 0 ? '+' : '';
-        
-        return `
-          <div class="ticker-item">
-            <span>${name}</span>
-            <span>${price}</span>
-            <span class="${colorClass}">${sign}${change} (${sign}${percent})</span>
-            <span class="ticker-sep">|</span>
-          </div>
-        `;
-      };
-
-      // Construct the sequence
-      let tickerHTML = '';
-      tickerHTML += formatItem('S&P 500', sp500);
-      tickerHTML += formatItem('3-MO T-BILL', tbill3m, true);
-      tickerHTML += formatItem('GOLD', gold);
-      
-      // Duplicate the sequence a few times so your CSS animation loops seamlessly without visual gaps
-      tickerHTML = tickerHTML + tickerHTML + tickerHTML + tickerHTML;
-
-      // Inject the live data into your existing ticker container
-      document.querySelector('.ticker-inner').innerHTML = tickerHTML;
-
-    } catch (error) {
-      console.error('Error fetching live ticker data:', error);
-      // Fails silently, leaving whatever hardcoded HTML is already in the ticker
-    }
-  }
-
-  // Execute once the DOM is fully loaded
-  document.addEventListener('DOMContentLoaded', fetchLiveTickerData);
 </script>
 </body>
 </html>
