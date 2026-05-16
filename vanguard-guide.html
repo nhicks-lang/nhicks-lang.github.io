@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Buy ETFs on Vanguard | Rock, Paper, Equity</title>
+    <meta name="description" content="A step-by-step guide to executing a balanced portfolio strategy by purchasing Stock, Gold, and Treasury ETFs on Vanguard.com.">
+    <style>
+        :root {
+            --rock-color: #d4af37;  
+            --paper-color: #2e7d32; 
+            --equity-color: #1565c0;
+            --bg-color: #fafafa;
+            --text-main: #202124;
+            --text-light: #5f6368;
+            --surface-color: #ffffff;
+            --border-color: #e0e0e0;
+            --tip-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--surface-color);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover, nav a.active { color: #111; }
+
+        /* Header Section */
+        header {
+            background-color: var(--surface-color);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0 0 1rem 0;
+            color: #111;
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 650px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 850px; 
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Introduction */
+        .intro {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Content Sections */
+        .content-section { margin-top: 3rem; }
+
+        .content-header {
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            color: #111;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        /* Panels / Steps */
+        .panel {
+            background: var(--surface-color);
+            padding: 2rem 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .panel h4 {
+            font-size: 1.35rem;
+            margin: 0 0 1.25rem 0;
+            color: #111;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--bg-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .step-number {
+            background-color: var(--equity-color);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .panel p {
+            margin: 0 0 1rem 0;
+            color: var(--text-light);
+        }
+
+        .panel p:last-child { margin-bottom: 0; }
+
+        .panel ul, .panel ol {
+            margin: 0.5rem 0 1rem 1.5rem;
+            padding: 0;
+            color: var(--text-light);
+        }
+
+        .panel li { margin-bottom: 0.75rem; }
+        .panel li strong { color: var(--text-main); }
+
+        /* Callout Boxes */
+        .prereq-box {
+            background-color: var(--tip-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--equity-color);
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 3rem;
+        }
+
+        .prereq-box h4 {
+            margin-top: 0;
+            color: #111;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pro-tip {
+            background-color: #fffde7;
+            border: 1px solid #fff59d;
+            border-left: 4px solid var(--rock-color);
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: #424242;
+        }
+
+        .pro-tip strong { color: #f57f17; }
+
+        /* Ticker Tags */
+        .etf-tag {
+            display: inline-block;
+            background: var(--surface-color);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            margin: 0 0.2rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--surface-color);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .disclaimer {
+            max-width: 600px;
+            margin: 0 auto 1rem auto;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .panel { padding: 1.5rem; }
+            nav { flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">The Strategy</a>
+        <a href="duration-tool.html">Duration Calculator</a>
+        <a href="vanguard-guide.html" class="active">Vanguard Guide</a>
+    </nav>
+
+    <header>
+        <h1>Executing the Trade</h1>
+        <p class="subtitle">A step-by-step guide to purchasing ETFs (Exchange-Traded Funds) on Vanguard.com to build your three pillars.</p>
+    </header>
+
+    <main class="container">
+        <div class="intro">
+            <p>Translating a strategy into reality requires navigating a brokerage interface. This guide breaks down the exact steps to allocate your funds into the Rock, Paper, and Equity pillars using Vanguard's trading platform.</p>
+        </div>
+
+        <div class="prereq-box">
+            <h4>Before You Begin</h4>
+            <ul style="margin: 0;">
+                <li><strong>Fund the Account:</strong> Ensure your Vanguard settlement fund (the default cash holding area) has sufficient funds to cover your purchases.</li>
+                <li><strong>Know Your Tickers:</strong> Have your chosen ETF symbols ready. As discussed on the main page, common examples include:
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>Rock (Gold):</strong> <span class="etf-tag">GLDM</span> or <span class="etf-tag">IAUM</span></li>
+                        <li><strong>Paper (Cash):</strong> <span class="etf-tag">SGOV</span> or <span class="etf-tag">TBLL</span></li>
+                        <li><strong>Equity (Stocks):</strong> <span class="etf-tag">VOO</span> or <span class="etf-tag">VTI</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <section class="content-section">
+            <h3 class="content-header">Step-by-Step Purchasing Guide</h3>
+            
+            <div class="panel">
+                <h4><span class="step-number">1</span> Log In and Navigate to Trading</h4>
+                <ol>
+                    <li>Log in to your account at <strong>Vanguard.com</strong>.</li>
+                    <li>From your main dashboard, locate the <strong>Transact</strong> menu at the top of the screen.</li>
+                    <li>Select <strong>Buy & sell</strong>.</li>
+                    <li>Choose the option to <strong>Trade Vanguard ETFs and non-Vanguard ETFs</strong>.</li>
+                </ol>
+            </div>
+
+            <div class="panel">
+                <h4><span class="step-number">2</span> Select the Account</h4>
+                <p>If you have multiple accounts (for example, a standard taxable Brokerage account and a Roth IRA), a dropdown menu will prompt you to select the specific account where you want to execute the purchase. Make sure you select the correct destination before proceeding.</p>
+            </div>
+
+            <div class="panel">
+                <h4><span class="step-number">3</span> Fill Out the Order Ticket</h4>
+                <p>You will now see an order ticket. You need to fill this out for each of the three pillars individually.</p>
+                <ul>
+                    <li><strong>Transaction Type:</strong> Select <strong>Buy</strong>.</li>
+                    <li><strong>Symbol:</strong> Enter your chosen ticker symbol (e.g., <span class="etf-tag">VOO</span>).</li>
+                    <li><strong>Shares or Dollars:</strong> Enter the amount you wish to invest. 
+                        <em>(See the Pro Tip below regarding fractional shares).</em>
+                    </li>
+                    <li><strong>Order Type:</strong> Select <strong>Market</strong>.
+                        <div class="pro-tip" style="margin-top: 0.75rem; border-left-color: var(--paper-color);">
+                            <strong>Market vs. Limit Orders:</strong> A "Market" order buys the ETF immediately at whatever the current price is. A "Limit" order lets you specify a maximum price you are willing to pay. For long-term investors buying highly traded ETFs, a simple Market order during normal trading hours is standard.
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="pro-tip">
+                    <strong>Pro Tip: Fractional Shares</strong><br>
+                    Vanguard allows you to buy fractional shares of Vanguard-branded ETFs (like VOO or VTI). This means you can type in an exact dollar amount (e.g., $500). <br><br>
+                    However, for non-Vanguard ETFs (like GLDM or SGOV), you usually must buy in <strong>whole shares</strong>. You will need to divide your target investment amount by the current price of the ETF to determine how many whole shares to type into the order ticket.
+                </div>
+            </div>
+
+            <div class="panel">
+                <h4><span class="step-number">4</span> Review and Submit</h4>
+                <ol>
+                    <li>Click the <strong>Preview</strong> or <strong>Continue</strong> button at the bottom of the ticket.</li>
+                    <li>Carefully review the order summary. Double-check the ticker symbol, the number of shares (or total estimated cost), and ensure it is drawing from your settlement fund.</li>
+                    <li>Once verified, click <strong>Submit</strong>.</li>
+                    <li>You will receive a confirmation screen with a trade confirmation number.</li>
+                </ol>
+            </div>
+
+            <div class="panel">
+                <h4><span class="step-number">5</span> Repeat for the Remaining Pillars</h4>
+                <p>Once the first purchase is complete, return to the <strong>Transact &gt; Buy & sell</strong> screen and repeat Steps 3 and 4 for the remaining two ticker symbols until your initial allocation is fully balanced.</p>
+            </div>
+
+            <div class="panel">
+                <h4><span class="step-number">6</span> The Dividend Strategy (Optional but Recommended)</h4>
+                <p>Most ETFs pay out dividends or interest. By default, brokerages often automatically reinvest these payouts to buy more of the same ETF.</p>
+                <p><strong>To make rebalancing easier:</strong> Navigate to Vanguard's <em>"Dividends and capital gains"</em> settings. Change the election from "Reinvest" to <strong>"Transfer to settlement fund."</strong></p>
+                <p>This allows your dividends to pile up as cash over the year. When your annual check-in arrives, you can use this accumulated cash to buy whatever pillar is currently underperforming, making it much easier to hit your exact 33.3% targets without having to sell assets.</p>
+            </div>
+
+        </section>
+
+        <section class="content-section">
+            <h3 class="content-header">A Note on Maintaining the Math</h3>
+            <div class="panel" style="border-left: 4px solid var(--rock-color);">
+                <p>Because non-Vanguard ETFs (like most Gold funds) require purchasing whole shares, getting the initial math to perfectly align at exactly 33.33% down to the penny is nearly impossible.</p>
+                <p><strong>The Solution:</strong> Do not stress over exact fractions. Aim to get the dollar allocations as close to equal as the whole share prices allow. Leave any leftover change safely in your settlement fund. You can simply incorporate that leftover cash into your math during your annual rebalancing check-in.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p class="disclaimer">RockPaperEquity.com does not constitute professional financial advice. Always do your own research before making financial decisions. We are not affiliated with, endorsed by, or sponsored by The Vanguard Group.</p>
+        <p>&copy; 2026 Rock, Paper, Equity. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

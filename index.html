@@ -1,1492 +1,473 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rock · Paper · Equity</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=Martian+Mono:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-:root {
-  --black: #0a0a08;
-  --white: #f5f2ec;
-  --gold: #d4a017;
-  --gold-bg: #fef9ee;
-  --red: #c0392b;
-  --green: #1a7a4a;
-  --blue: #1a3a6b;
-  --rule: #0a0a08;
-  --muted: #6b6560;
-  --ff-display: 'Bebas Neue', Impact, sans-serif;
-  --ff-body: 'Familjen Grotesk', Georgia, serif;
-  --ff-mono: 'Martian Mono', monospace;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, Paper, Equity | A Simple Approach to Investing</title>
+    <meta name="description" content="A straightforward guide to a balanced portfolio: investing equally in gold (rock), cash (paper), and stocks (equity).">
+    <style>
+        :root {
+            --rock-color: #d4af37;  
+            --paper-color: #2e7d32; 
+            --equity-color: #1565c0;
+            --bg-color: #fafafa;
+            --text-main: #202124;
+            --text-light: #5f6368;
+            --surface-color: #ffffff;
+            --border-color: #e0e0e0;
+        }
 
-body {
-  font-family: var(--ff-body);
-  background: var(--white);
-  color: var(--black);
-  overflow-x: hidden;
-  cursor: crosshair;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
-/* ─── GLOBAL RULES ─── */
-.rule-h { border-top: 2px solid var(--black); }
-.rule-h-thin { border-top: 1px solid var(--black); }
-.rule-v { border-left: 2px solid var(--black); }
+        /* Navigation */
+        nav {
+            background-color: var(--surface-color);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-/* ─── MASTHEAD ─── */
-.masthead {
-  border-bottom: 2px solid var(--black);
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: 0;
-}
-.mast-left {
-  padding: 0.75rem 1.5rem;
-  border-right: 2px solid var(--black);
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  line-height: 1.6;
-}
-.mast-center {
-  padding: 1rem 3rem;
-  text-align: center;
-}
-.logo {
-  font-family: var(--ff-display);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  letter-spacing: 0.05em;
-  line-height: 1;
-  color: var(--black);
-}
-.logo-dot { color: var(--gold); }
-.logo-sub {
-  font-family: var(--ff-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.3rem;
-}
-.mast-right {
-  padding: 0.75rem 1.5rem;
-  border-left: 2px solid var(--black);
-  display: flex;
-  justify-content: flex-end;
-  gap: 2rem;
-}
-.mast-nav a {
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--black);
-  text-decoration: none;
-  display: block;
-  line-height: 2;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.15s;
-}
-.mast-nav a:hover { border-color: var(--gold); color: var(--gold); }
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
 
-/* ─── TICKER STRIP ─── */
-.ticker-strip {
-  background: var(--black);
-  color: var(--white);
-  padding: 0.5rem 0;
-  overflow: hidden;
-  border-bottom: 2px solid var(--black);
-}
-.ticker-inner {
-  display: flex;
-  gap: 4rem;
-  white-space: nowrap;
-  animation: ticker 25s linear infinite;
-}
-@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.ticker-item {
-  font-family: var(--ff-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-.ticker-up { color: #4ade80; }
-.ticker-down { color: #f87171; }
-.ticker-sep { color: #3a3a38; }
+        nav a:hover, nav a.active {
+            color: #111;
+        }
 
-/* ─── HERO ─── */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  min-height: 92vh;
-  border-bottom: 2px solid var(--black);
-}
-.hero-main {
-  padding: clamp(3rem, 6vw, 5rem);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-right: 2px solid var(--black);
-  position: relative;
-}
-.hero-overline {
-  font-family: var(--ff-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-.hero-overline::before {
-  content: '';
-  display: block;
-  width: 3rem;
-  height: 2px;
-  background: var(--gold);
-}
-.hero-headline {
-  font-family: var(--ff-display);
-  font-size: clamp(4.5rem, 11vw, 10rem);
-  line-height: 0.92;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: var(--black);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.hero-headline .accent { color: var(--gold); -webkit-text-stroke: 1px var(--gold); }
-.hero-headline .outline {
-  -webkit-text-stroke: 2px var(--black);
-  color: transparent;
-}
-.hero-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border-top: 2px solid var(--black);
-  margin-top: 3rem;
-}
-.hero-bottom-left {
-  padding: 2rem 2rem 0 0;
-  border-right: 1px solid var(--black);
-  padding-right: 2rem;
-}
-.hero-bottom-right { padding: 2rem 0 0 2rem; }
-.hero-deck {
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: var(--black);
-  font-weight: 400;
-}
-.hero-deck strong { font-weight: 700; }
-.hero-cta-row {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-.btn-black {
-  font-family: var(--ff-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.85rem 1.75rem;
-  background: var(--black);
-  color: var(--white);
-  border: 2px solid var(--black);
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: background 0.15s, color 0.15s;
-}
-.btn-black:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
-.btn-outline {
-  font-family: var(--ff-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.85rem 1.75rem;
-  background: transparent;
-  color: var(--black);
-  border: 2px solid var(--black);
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: background 0.15s, color 0.15s;
-}
-.btn-outline:hover { background: var(--black); color: var(--white); }
+        /* Hero Section */
+        header {
+            background-color: var(--surface-color);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-/* ─── HERO SIDEBAR ─── */
-.hero-sidebar {
-  display: flex;
-  flex-direction: column;
-  background: var(--black);
-  color: var(--white);
-}
-.sidebar-block {
-  padding: 2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.sidebar-block:last-child { border-bottom: none; }
-.sidebar-label {
-  font-family: var(--ff-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 0.75rem;
-}
-.sidebar-num {
-  font-family: var(--ff-display);
-  font-size: 3.5rem;
-  line-height: 1;
-  letter-spacing: 0.02em;
-}
-.sidebar-num.gold { color: var(--gold); }
-.sidebar-num.green { color: #4ade80; }
-.sidebar-num.blue { color: #60a5fa; }
-.sidebar-desc {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.5);
-  margin-top: 0.5rem;
-  line-height: 1.5;
-}
-.pillar-bars { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem; }
-.p-bar-row { display: flex; align-items: center; gap: 0.75rem; }
-.p-bar-label { font-family: var(--ff-mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; width: 3.5rem; color: rgba(255,255,255,0.5); }
-.p-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
-.p-bar-fill { height: 100%; width: 33.3%; }
-.p-bar-fill.gold { background: var(--gold); }
-.p-bar-fill.green { background: #4ade80; }
-.p-bar-fill.blue { background: #60a5fa; }
-.p-bar-pct { font-family: var(--ff-mono); font-size: 0.55rem; color: rgba(255,255,255,0.5); }
+        h1 {
+            font-size: 3.5rem;
+            margin: 0 0 1rem 0;
+            color: #111;
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
 
-/* ─── MANIFESTO ─── */
-.manifesto {
-  background: var(--gold);
-  padding: 5rem clamp(2rem, 6vw, 6rem);
-  border-bottom: 2px solid var(--black);
-}
-.manifesto-grid { display: grid; grid-template-columns: 280px 1fr; gap: 6rem; align-items: center; }
-.manifesto-label {
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(0,0,0,0.5);
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  align-self: center;
-  justify-self: end;
-}
-.manifesto-body {
-  font-family: var(--ff-display);
-  font-size: clamp(2rem, 4.5vw, 3.8rem);
-  line-height: 1.1;
-  letter-spacing: 0.01em;
-  color: var(--black);
-}
-.manifesto-body em { font-family: var(--ff-body); font-style: italic; font-size: 0.65em; font-weight: 400; }
-.manifesto-sub {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: rgba(0,0,0,0.65);
-  margin-top: 2rem;
-  max-width: 640px;
-}
+        .subtitle {
+            font-size: 1.35rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
 
-/* ─── SECTION WRAPPER ─── */
-.section {
-  border-bottom: 2px solid var(--black);
-}
-.section-head {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  border-bottom: 2px solid var(--black);
-}
-.section-num {
-  font-family: var(--ff-display);
-  font-size: 4rem;
-  color: var(--black);
-  padding: 1.5rem;
-  border-right: 2px solid var(--black);
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gold-bg);
-}
-.section-title-wrap {
-  padding: 1.5rem 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-}
-.section-title {
-  font-family: var(--ff-display);
-  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.section-aside {
-  font-size: 0.8rem;
-  color: var(--muted);
-  max-width: 260px;
-  line-height: 1.65;
-  text-align: right;
-  font-style: italic;
-}
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
 
-/* ─── CALCULATOR ─── */
-.calc-wrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-.calc-input-side {
-  padding: 3rem;
-  border-right: 2px solid var(--black);
-}
-.calc-input-label {
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.75rem;
-}
-.calc-input-row {
-  display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
-  border-bottom: 3px solid var(--black);
-  padding-bottom: 0.5rem;
-  margin-bottom: 3rem;
-}
-.calc-dollar {
-  font-family: var(--ff-display);
-  font-size: 3rem;
-  color: var(--gold);
-  line-height: 1;
-}
-.calc-input {
-  font-family: var(--ff-display);
-  font-size: 3rem;
-  color: var(--black);
-  background: transparent;
-  border: none;
-  outline: none;
-  width: 100%;
-  line-height: 1;
-}
-.calc-input::placeholder { color: #ccc; }
-.result-blocks { display: flex; flex-direction: column; gap: 0; }
-.result-block {
-  display: grid;
-  grid-template-columns: 4px 1fr auto;
-  gap: 1.5rem;
-  align-items: center;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--black);
-}
-.result-block:last-child { border-bottom: none; }
-.result-stripe { height: 100%; min-height: 3.5rem; }
-.result-stripe.gold { background: var(--gold); }
-.result-stripe.green { background: var(--green); }
-.result-stripe.blue { background: var(--blue); }
-.result-name {
-  font-family: var(--ff-display);
-  font-size: 1.3rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-.result-sub { font-family: var(--ff-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
-.result-amount {
-  font-family: var(--ff-display);
-  font-size: 2rem;
-  letter-spacing: 0.02em;
-  text-align: right;
-}
-.result-amount.gold { color: var(--gold); }
-.result-amount.green { color: var(--green); }
-.result-amount.blue { color: var(--blue); }
+        /* Introduction */
+        .intro {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 4rem auto;
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
 
-.calc-chart-side {
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2.5rem;
-  background: #fafaf8;
-}
-.donut-container { position: relative; width: 220px; height: 220px; }
-.donut-center {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-}
-.donut-label {
-  font-family: var(--ff-display);
-  font-size: 2.2rem;
-  line-height: 1;
-  color: var(--black);
-}
-.donut-sublabel {
-  font-family: var(--ff-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.2rem;
-}
-.legend-rows { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
-.legend-row-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--black);
-}
-.leg-swatch { width: 12px; height: 12px; flex-shrink: 0; }
-.leg-swatch.gold { background: var(--gold); }
-.leg-swatch.green { background: var(--green); }
-.leg-swatch.blue { background: var(--blue); }
-.leg-name { font-family: var(--ff-mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; flex: 1; }
-.leg-pct { font-family: var(--ff-display); font-size: 1.2rem; color: var(--muted); }
+        /* The Three Pillars Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
 
-/* ─── THREE PILLARS ─── */
-.pillars-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-.pillar-card {
-  padding: 3.5rem 3rem;
-  border-right: 2px solid var(--black);
-  position: relative;
-  overflow: hidden;
-  transition: background 0.2s;
-}
-.pillar-card:last-child { border-right: none; }
-.pillar-card:hover { background: var(--gold-bg); }
-.pillar-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 5px;
-}
-.pillar-card.rock::before { background: var(--gold); }
-.pillar-card.paper::before { background: var(--green); }
-.pillar-card.equity::before { background: var(--blue); }
-.pillar-bignum {
-  font-family: var(--ff-display);
-  font-size: 7rem;
-  line-height: 0.85;
-  letter-spacing: -0.02em;
-  color: rgba(0,0,0,0.06);
-  position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-}
-.pillar-tag {
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.7rem;
-  display: inline-block;
-  margin-bottom: 1.5rem;
-}
-.pillar-card.rock .pillar-tag { background: rgba(212,160,23,0.15); color: #a07a00; border: 1px solid var(--gold); }
-.pillar-card.paper .pillar-tag { background: rgba(26,122,74,0.1); color: var(--green); border: 1px solid var(--green); }
-.pillar-card.equity .pillar-tag { background: rgba(26,58,107,0.1); color: var(--blue); border: 1px solid var(--blue); }
-.pillar-title {
-  font-family: var(--ff-display);
-  font-size: 2.8rem;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1;
-  margin-bottom: 1.5rem;
-}
-.pillar-tagline {
-  font-size: 1.1rem;
-  font-style: italic;
-  color: var(--muted);
-  margin-bottom: 1.5rem;
-  line-height: 1.5;
-}
-.pillar-body {
-  font-size: 0.9rem;
-  line-height: 1.9;
-  color: #3a3530;
-}
-.pillar-body strong { font-weight: 700; color: var(--black); }
-.pillar-facts {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  border-top: 1px solid var(--black);
-  padding-top: 1.5rem;
-}
-.pillar-fact {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.8rem;
-  color: var(--muted);
-  line-height: 1.5;
-}
-.fact-bullet { flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; margin-top: 0.4rem; }
-.fact-bullet.gold { background: var(--gold); }
-.fact-bullet.green { background: var(--green); }
-.fact-bullet.blue { background: var(--blue); }
+        .card {
+            background: var(--surface-color);
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-/* ─── BACKTEST ─── */
-.backtest-inner { padding: 3rem; }
-.ctrl-row { display: flex; gap: 0; margin-bottom: 2.5rem; border: 2px solid var(--black); display: inline-flex; }
-.ctrl { 
-  font-family: var(--ff-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.65rem 1.4rem;
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  border-right: 1px solid var(--black);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.ctrl:last-child { border-right: none; }
-.ctrl:hover { background: var(--gold-bg); color: var(--black); }
-.ctrl.active { background: var(--black); color: var(--white); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        }
 
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 2px solid var(--black);
-  margin-bottom: 2rem;
-}
-.stat-cell {
-  padding: 1.5rem;
-  border-right: 1px solid var(--black);
-}
-.stat-cell:last-child { border-right: none; }
-.stat-label { font-family: var(--ff-mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
-.stat-val {
-  font-family: var(--ff-display);
-  font-size: 1.8rem;
-  letter-spacing: 0.02em;
-  line-height: 1;
-}
-.stat-val.gold { color: var(--gold); }
-.stat-val.blue { color: var(--blue); }
-.stat-val.green { color: var(--green); }
-.stat-val.red { color: var(--red); }
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-.chart-box {
-  border: 2px solid var(--black);
-  padding: 2rem;
-  background: #fafaf8;
-}
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #111;
+        }
 
-/* ─── SEASONS ─── */
-.seasons-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-}
-.season-col {
-  padding: 3rem 2rem;
-  border-right: 2px solid var(--black);
-}
-.season-col:last-child { border-right: none; }
-.season-glyph {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  display: block;
-}
-.season-regime {
-  font-family: var(--ff-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-}
-.season-name {
-  font-family: var(--ff-display);
-  font-size: 1.8rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  line-height: 1;
-  margin-bottom: 1.5rem;
-}
-.season-body { font-size: 0.85rem; color: #4a4540; line-height: 1.75; margin-bottom: 1.5rem; }
-.season-winners { display: flex; flex-direction: column; gap: 0.5rem; }
-.season-win {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.w-dot { width: 8px; height: 8px; flex-shrink: 0; }
-.w-dot.gold { background: var(--gold); }
-.w-dot.green { background: var(--green); }
-.w-dot.blue { background: var(--blue); }
-.w-dot.red { background: var(--red); }
-.season-win.up { color: var(--black); }
-.season-win.neutral { color: var(--muted); }
-.season-win.down { color: var(--red); }
+        .card p {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            margin: 0;
+            flex-grow: 1;
+        }
 
-/* ─── REBALANCE ─── */
-.rebal-section { background: var(--black); color: var(--white); }
-.rebal-head {
-  padding: 4rem 3rem 3rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.rebal-overline {
-  font-family: var(--ff-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
-  margin-bottom: 1rem;
-}
-.rebal-title {
-  font-family: var(--ff-display);
-  font-size: clamp(2.5rem, 5vw, 5rem);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--white);
-}
-.rebal-title span { color: var(--gold); }
-.rebal-intro {
-  font-size: 1.05rem;
-  color: rgba(255,255,255,0.55);
-  max-width: 600px;
-  line-height: 1.8;
-  margin-top: 1.5rem;
-}
-.rebal-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-.rebal-step {
-  padding: 3rem;
-  border-right: 1px solid rgba(255,255,255,0.1);
-  position: relative;
-}
-.rebal-step:last-child { border-right: none; }
-.step-big {
-  font-family: var(--ff-display);
-  font-size: 6rem;
-  line-height: 0.85;
-  color: rgba(255,255,255,0.05);
-  margin-bottom: 1.5rem;
-}
-.step-tag {
-  font-family: var(--ff-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.75rem;
-}
-.step-title {
-  font-family: var(--ff-display);
-  font-size: 1.8rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--white);
-  margin-bottom: 1rem;
-}
-.step-body { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.85; }
-.step-body strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .rock-card { border-top: 4px solid var(--rock-color); }
+        .paper-card { border-top: 4px solid var(--paper-color); }
+        .equity-card { border-top: 4px solid var(--equity-color); }
 
-/* ─── TRUTH BOX ─── */
-.truth-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 2px solid var(--black);
-}
-.truth-left {
-  padding: 5rem clamp(2rem, 4vw, 4rem);
-  border-right: 2px solid var(--black);
-  background: var(--gold-bg);
-}
-.truth-hed {
-  font-family: var(--ff-display);
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  text-transform: uppercase;
-  line-height: 1.05;
-  margin-bottom: 2rem;
-}
-.truth-hed em { color: var(--gold); font-style: normal; }
-.truth-body { font-size: 0.95rem; color: #4a4540; line-height: 1.9; }
-.truth-body p + p { margin-top: 1.25rem; }
-.truth-body strong { color: var(--black); font-weight: 700; }
-.truth-right {
-  padding: 5rem clamp(2rem, 4vw, 4rem);
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.truth-row {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-  padding: 1.75rem 0;
-  border-bottom: 1px solid var(--black);
-}
-.truth-row:first-child { border-top: 1px solid var(--black); }
-.truth-icon { font-size: 1.5rem; flex-shrink: 0; width: 2.5rem; }
-.truth-content h4 {
-  font-family: var(--ff-display);
-  font-size: 1.2rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-}
-.truth-content p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+        /* ETF Example Tags */
+        .etf-list {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
 
-/* ─── FOOTER ─── */
-.footer {
-  background: var(--black);
-  color: var(--white);
-}
-.footer-top {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.footer-col {
-  padding: 3rem;
-  border-right: 1px solid rgba(255,255,255,0.1);
-}
-.footer-col:last-child { border-right: none; }
-.footer-logo {
-  font-family: var(--ff-display);
-  font-size: 2rem;
-  letter-spacing: 0.05em;
-  color: var(--white);
-  margin-bottom: 0.75rem;
-}
-.footer-logo em { color: var(--gold); font-style: normal; }
-.footer-tagline { font-size: 0.85rem; color: rgba(255,255,255,0.4); line-height: 1.6; }
-.footer-col-label {
-  font-family: var(--ff-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
-  margin-bottom: 1.25rem;
-}
-.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-.footer-links a {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.55);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.footer-links a:hover { color: var(--gold); }
-.footer-bottom {
-  padding: 1.5rem 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.footer-copy { font-family: var(--ff-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
-.footer-disclaimer { font-size: 0.7rem; color: rgba(255,255,255,0.2); max-width: 560px; line-height: 1.65; }
+        .etf-list-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
 
-/* ─── TOOLTIP ─── */
-.tip {
-  border-bottom: 1px dashed var(--gold);
-  cursor: help;
-  color: inherit;
-  position: relative;
-}
-.tip::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  background: var(--black);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--white);
-  padding: 0.65rem 1rem;
-  font-family: var(--ff-body);
-  font-style: normal;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.2s;
-  z-index: 50;
-}
-.tip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .etf-tag {
+            display: inline-block;
+            background: var(--bg-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
 
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero-overline { animation: fadeUp 0.5s ease 0.1s both; }
-.hero-headline { animation: fadeUp 0.6s ease 0.2s both; }
-.hero-bottom { animation: fadeUp 0.6s ease 0.4s both; }
-.hero-sidebar { animation: fadeUp 0.7s ease 0.3s both; }
+        .etf-note {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
 
-/* ─── RESPONSIVE ─── */
-@media (max-width: 1024px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-sidebar { flex-direction: row; flex-wrap: wrap; }
-  .sidebar-block { min-width: 180px; border-bottom: none; border-right: 1px solid rgba(255,255,255,0.1); }
-  .pillars-grid { grid-template-columns: 1fr; }
-  .pillar-card { border-right: none; border-bottom: 2px solid var(--black); }
-  .seasons-grid { grid-template-columns: 1fr 1fr; }
-  .season-col:nth-child(2) { border-right: none; }
-  .season-col:nth-child(3) { border-top: 2px solid var(--black); }
-  .season-col:nth-child(4) { border-top: 2px solid var(--black); border-right: none; }
-  .truth-section { grid-template-columns: 1fr; }
-  .truth-left { border-right: none; border-bottom: 2px solid var(--black); }
-  .rebal-steps { grid-template-columns: 1fr; }
-  .rebal-step { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .calc-wrap { grid-template-columns: 1fr; }
-  .calc-input-side { border-right: none; border-bottom: 2px solid var(--black); }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .stat-cell:nth-child(2n) { border-right: none; }
-  .stat-cell:nth-child(3), .stat-cell:nth-child(4) { border-top: 1px solid var(--black); }
-  .manifesto-grid { grid-template-columns: 1fr; }
-  .manifesto-label { writing-mode: horizontal-tb; transform: none; }
-  .footer-top { grid-template-columns: 1fr; }
-  .footer-col { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .masthead { grid-template-columns: 1fr auto; }
-  .mast-right { display: none; }
-  .section-head { grid-template-columns: 60px 1fr; }
-  .hero-headline { font-size: clamp(3.5rem, 12vw, 6rem); }
-}
-@media (max-width: 600px) {
-  .seasons-grid { grid-template-columns: 1fr; }
-  .season-col { border-top: 2px solid var(--black); }
-  .season-col:first-child { border-top: none; }
-  .hero-bottom { grid-template-columns: 1fr; }
-  .hero-bottom-left { border-right: none; border-bottom: 1px solid var(--black); padding-right: 0; }
-  .ctrl-row { flex-wrap: wrap; }
-}
-</style>
+        /* Content Sections */
+        .content-section {
+            margin-top: 5rem;
+        }
+
+        .content-header {
+            font-size: 2.25rem;
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .panel h4 {
+            font-size: 1.25rem;
+            margin: 0 0 1rem 0;
+            color: #111;
+        }
+
+        .panel p {
+            margin: 0 0 1rem 0;
+            color: var(--text-light);
+        }
+
+        .panel p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--equity-color);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #0d47a1;
+        }
+
+        .btn-paper { background-color: var(--paper-color); }
+        .btn-paper:hover { background-color: #1b5e20; }
+
+        /* Math Table */
+        .math-table-container {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: #111;
+        }
+
+        .highlight-row {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            color: #111;
+        }
+
+        /* Tips Section */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-item {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tip-item h4 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            color: #111;
+            font-size: 1.1rem;
+        }
+
+        .tip-item p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--surface-color);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .disclaimer {
+            max-width: 600px;
+            margin: 0 auto 1rem auto;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.75rem; }
+            .panel { padding: 1.5rem; }
+            nav { flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- MASTHEAD -->
-<header class="masthead">
-  <div class="mast-left">
-    <div>Vol. I &nbsp;·&nbsp; The All-Weather Portfolio</div>
-    <div>Est. 2026 &nbsp;·&nbsp; Strategy Series</div>
-  </div>
-  <div class="mast-center">
-    <div class="logo">Rock<span class="logo-dot">·</span>Paper<span class="logo-dot">·</span>Equity</div>
-    <div class="logo-sub">The 33% Doctrine — Free to Read</div>
-  </div>
-  <div class="mast-right">
-    <nav class="mast-nav">
-      <a href="#calculator">Calculator</a>
-      <a href="#pillars">The Pillars</a>
-      <a href="#history">History</a>
-      <a href="#rebalance">Protocol</a>
+    <nav>
+        <a href="index.html" class="active">The Strategy</a>
+        <a href="duration-tool.html">Duration Calculator</a>
+        <a href="vanguard-guide.html">Vanguard Guide</a>
     </nav>
-  </div>
-</header>
 
-<!-- TICKER -->
-<div class="ticker-strip" style="padding: 0; border-bottom: 2px solid var(--black);">
-  <div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-    {
-    "symbols": [
-      {
-        "proName": "FOREXCOM:SPXUSD",
-        "title": "S&P 500"
-      },
-      {
-        "proName": "FRED:DGS1MO",
-        "title": "1-MO T-BILL"
-      },
-      {
-        "proName": "OANDA:XAUUSD",
-        "title": "GOLD"
-      }
-    ],
-    "showSymbolLogo": false,
-    "isTransparent": true,
-    "displayMode": "regular",
-    "colorTheme": "dark",
-    "locale": "en"
-    }
-    </script>
-  </div>
-  </div>
+    <header>
+        <h1>Rock, Paper, Equity</h1>
+        <p class="subtitle">A straightforward, systematic approach to balancing your portfolio.</p>
+    </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-main">
-    <div class="hero-overline">The simplest portfolio you'll ever build</div>
-    <div class="hero-headline">
-      <div>STOP</div>
-      <div class="outline">TRYING</div>
-      <div>TO <span class="accent">BEAT</span></div>
-      <div>THE MARKET.</div>
-    </div>
-    <div class="hero-bottom">
-      <div class="hero-bottom-left">
-        <p class="hero-deck">Split your money <strong>exactly three ways</strong>. One third in gold. One third in cash. One third in stocks. Rebalance once a year. That's the whole strategy.</p>
-        <div class="hero-cta-row">
-          <a href="#calculator" class="btn-black">Run My Numbers →</a>
-          <a href="#pillars" class="btn-outline">Why It Works</a>
+    <main class="container">
+        <div class="intro">
+            <p>Investing is often made more complicated than it needs to be. By breaking the financial world down into three core asset classes and allocating your funds equally among them (33.3% each), you create a resilient portfolio designed to navigate varying economic climates.</p>
         </div>
-      </div>
-      <div class="hero-bottom-right">
-        <p class="hero-deck" style="font-size:0.9rem; font-style:italic; color:var(--muted);">
-          "The investor's chief problem — and even his worst enemy — is likely to be himself."<br><br>
-          — Benjamin Graham, <em>The Intelligent Investor</em>
-        </p>
-      </div>
-    </div>
-  </div>
 
-  <div class="hero-sidebar">
-    <div class="sidebar-block">
-      <div class="sidebar-label">The Rock</div>
-      <div class="sidebar-num gold">33.3%</div>
-      <div class="sidebar-desc">Gold — your crisis insurance. 5,000 years of proof.</div>
-    </div>
-    <div class="sidebar-block">
-      <div class="sidebar-label">The Paper</div>
-      <div class="sidebar-num green">33.3%</div>
-      <div class="sidebar-desc">Cash — not idle. It's compressed optionality and your weapon in a crash.</div>
-    </div>
-    <div class="sidebar-block">
-      <div class="sidebar-label">The Equity</div>
-      <div class="sidebar-num blue">33.3%</div>
-      <div class="sidebar-desc">Stocks — the long game. Human progress, compounding forever.</div>
-    </div>
-    <div class="sidebar-block">
-      <div class="sidebar-label">Allocation Balance</div>
-      <div class="pillar-bars">
-        <div class="p-bar-row">
-          <span class="p-bar-label">Rock</span>
-          <div class="p-bar-track"><div class="p-bar-fill gold"></div></div>
-          <span class="p-bar-pct">33%</span>
+        <div class="grid">
+            <div class="card rock-card">
+                <div class="icon">🪨</div>
+                <h2>Rock (Gold)</h2>
+                <p><strong>The anchor.</strong> Gold acts as a historic store of value. It offers stability when purchasing power is threatened by inflation or when confidence in traditional currency fluctuates.</p>
+                <div class="etf-list">
+                    <div class="etf-list-title">Fund Examples</div>
+                    <span class="etf-tag">GLDM</span>
+                    <span class="etf-tag">IAUM</span>
+                </div>
+            </div>
+
+            <div class="card paper-card">
+                <div class="icon">💵</div>
+                <h2>Paper (Cash)</h2>
+                <p><strong>The safety net.</strong> Cash, or highly liquid equivalents like short-term treasury bills, ensures you maintain a steady baseline of security and provides a buffer during market downturns.</p>
+                <div class="etf-list">
+                    <div class="etf-list-title">Fund Examples</div>
+                    <span class="etf-tag">SGOV</span>
+                    <span class="etf-tag">TBLL</span>
+                    <span class="etf-note">Extended Duration: <strong>iShares iBonds</strong></span>
+                </div>
+            </div>
+
+            <div class="card equity-card">
+                <div class="icon">📈</div>
+                <h2>Equity (Stocks)</h2>
+                <p><strong>The engine.</strong> Stocks represent ownership in real businesses. This is the primary growth driver of the portfolio, intended to build wealth and outpace inflation over the long term.</p>
+                <div class="etf-list">
+                    <div class="etf-list-title">Fund Examples</div>
+                    <span class="etf-tag">VOO</span>
+                    <span class="etf-tag">VTI</span>
+                    <span class="etf-tag">QQQM</span>
+                    <span class="etf-tag">QTOP</span>
+                </div>
+            </div>
         </div>
-        <div class="p-bar-row">
-          <span class="p-bar-label">Paper</span>
-          <div class="p-bar-track"><div class="p-bar-fill green"></div></div>
-          <span class="p-bar-pct">33%</span>
-        </div>
-        <div class="p-bar-row">
-          <span class="p-bar-label">Equity</span>
-          <div class="p-bar-track"><div class="p-bar-fill blue"></div></div>
-          <span class="p-bar-pct">33%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- MANIFESTO -->
-<div class="manifesto">
-  <div class="manifesto-grid">
-    <div class="manifesto-label">The Doctrine</div>
-    <div>
-      <div class="manifesto-body">
-        NO ONE KNOWS WHAT'S COMING. <em>Not the analysts. Not the algorithms. Not you.</em>
-        SO BUILD A PORTFOLIO THAT DOESN'T NEED TO.
-      </div>
-      <p class="manifesto-sub">
-        The 33% strategy isn't about maximizing returns. It's about surviving every market condition with your wealth — and your sanity — intact. When stocks crash, gold and cash protect you. When inflation rages, gold surges. When everything booms, equities compound. You win by not losing.
-      </p>
-    </div>
-  </div>
-</div>
+        <section class="content-section">
+            <h3 class="content-header">The Mechanics of Equal Parts</h3>
+            <div class="philosophy-grid">
+                <div class="panel">
+                    <h4>1. Simplicity over speculation</h4>
+                    <p>Predicting the economy is nearly impossible. By holding equal parts of assets that respond differently to inflation, deflation, booms, and recessions, the portfolio is positioned to handle shifts without requiring you to guess what happens next.</p>
+                </div>
+                <div class="panel">
+                    <h4>2. Systematic balancing</h4>
+                    <p>The strategy relies on a periodic check-in, usually once a year. If one asset class outgrows the others, you reallocate your funds to restore the 33.3% split. This naturally enforces a disciplined habit of shifting capital from outperforming assets into underperforming ones.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--paper-color);">
+                    <h4>3. Optimizing the Paper Pillar</h4>
+                    <p>When holding the "Paper" portion in Treasuries, determining how long to lock up your cash can be tricky. A reliable heuristic is the 20 basis point rule. Begin by identifying the baseline yield at 0 years (immediate cash or the shortest maturity available). Before extending your duration further out the yield curve—such as purchasing specific maturity years via <strong>iShares iBonds</strong> ETFs—ensure the market is compensating you with at least a 20 basis point (0.20%) premium in yield for each additional year. If the premium isn't there, keep your duration short.</p>
+                    <a href="duration-tool.html" class="btn btn-paper">Open the Duration Calculator &rarr;</a>
+                </div>
+            </div>
+        </section>
 
-<!-- CALCULATOR -->
-<section class="section" id="calculator">
-  <div class="section-head">
-    <div class="section-num">01</div>
-    <div class="section-title-wrap">
-      <h2 class="section-title">The Allocation Calculator</h2>
-      <div class="section-aside">Enter your total investable capital. The model splits it exactly three ways — no guesswork needed.</div>
-    </div>
-  </div>
-  <div class="calc-wrap">
-    <div class="calc-input-side">
-      <div class="calc-input-label">Total Capital to Invest (USD)</div>
-      <div class="calc-input-row">
-        <span class="calc-dollar">$</span>
-        <input class="calc-input" type="number" id="totalAmt" value="30000" oninput="runCalc()" placeholder="0">
-      </div>
-      <div class="result-blocks">
-        <div class="result-block">
-          <div class="result-stripe gold"></div>
-          <div>
-            <div class="result-name">The Rock — Gold</div>
-            <div class="result-sub">GLD ETF · Physical Gold</div>
-          </div>
-          <div class="result-amount gold" id="resGold">$10,000</div>
-        </div>
-        <div class="result-block">
-          <div class="result-stripe green"></div>
-          <div>
-            <div class="result-name">The Paper — Cash</div>
-            <div class="result-sub">High-Yield Savings · T-Bills · Money Market</div>
-          </div>
-          <div class="result-amount green" id="resCash">$10,000</div>
-        </div>
-        <div class="result-block">
-          <div class="result-stripe blue"></div>
-          <div>
-            <div class="result-name">The Equity — Stocks</div>
-            <div class="result-sub">S&amp;P 500 Index Fund · Total Market ETF</div>
-          </div>
-          <div class="result-amount blue" id="resEquity">$10,000</div>
-        </div>
-      </div>
-    </div>
-    <div class="calc-chart-side">
-      <div class="donut-container">
-        <canvas id="donutChart" width="220" height="220"></canvas>
-        <div class="donut-center">
-          <div class="donut-label">⅓ ⅓ ⅓</div>
-          <div class="donut-sublabel">Equal Split</div>
-        </div>
-      </div>
-      <div class="legend-rows">
-        <div class="legend-row-item">
-          <div class="leg-swatch gold"></div>
-          <span class="leg-name">Rock — Gold</span>
-          <span class="leg-pct">33.3%</span>
-        </div>
-        <div class="legend-row-item">
-          <div class="leg-swatch green"></div>
-          <span class="leg-name">Paper — Cash</span>
-          <span class="leg-pct">33.3%</span>
-        </div>
-        <div class="legend-row-item">
-          <div class="leg-swatch blue"></div>
-          <span class="leg-name">Equity — Stocks</span>
-          <span class="leg-pct">33.3%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+        <section class="content-section">
+            <h3 class="content-header">Rebalancing in Action</h3>
+            <div class="panel">
+                <p>Let’s look at a practical example of how the annual check-in works. Imagine you start with $3,000, perfectly balanced. Over the next year, stocks have a massive run, gold stays flat, and cash earns a little interest.</p>
+                
+                <div class="math-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Asset Class</th>
+                                <th>Starting Balance</th>
+                                <th>Balance After 1 Year</th>
+                                <th>The Action Required</th>
+                                <th>New Balanced Portfolio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>🪨 Rock (Gold)</td>
+                                <td>$1,000</td>
+                                <td>$1,000 (25%)</td>
+                                <td>Buy $300</td>
+                                <td>$1,300 (33.3%)</td>
+                            </tr>
+                            <tr>
+                                <td>💵 Paper (Cash)</td>
+                                <td>$1,000</td>
+                                <td>$1,050 (26%)</td>
+                                <td>Buy $250</td>
+                                <td>$1,300 (33.3%)</td>
+                            </tr>
+                            <tr>
+                                <td>📈 Equity (Stocks)</td>
+                                <td>$1,000</td>
+                                <td>$1,850 (48%)</td>
+                                <td>Move $550 to other pillars</td>
+                                <td>$1,300 (33.3%)</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>Total Portfolio</td>
+                                <td>$3,000</td>
+                                <td>$3,900</td>
+                                <td>Rebalance to exactly 33.3% each</td>
+                                <td>$3,900</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.95rem;"><em>Notice how this mechanic naturally forced you to take profits from the asset that performed well (Stocks) and buy the assets that are currently priced lower (Gold and Cash).</em></p>
+            </div>
+        </section>
 
-<!-- THREE PILLARS -->
-<section class="section" id="pillars">
-  <div class="section-head">
-    <div class="section-num">02</div>
-    <div class="section-title-wrap">
-      <h2 class="section-title">The Three Pillars</h2>
-      <div class="section-aside">Each one thrives in conditions that hurt the others. That's the whole point.</div>
-    </div>
-  </div>
-  <div class="pillars-grid">
-    <div class="pillar-card rock">
-      <div class="pillar-bignum">01</div>
-      <span class="pillar-tag">The Rock · Gold · 33%</span>
-      <h3 class="pillar-title">Your Crisis Insurance</h3>
-      <p class="pillar-tagline">"Gold doesn't pay dividends. It pays in survival."</p>
-      <p class="pillar-body">
-        Stocks can go to zero. Bonds can default. Banks can fail. <strong>Gold cannot go bankrupt.</strong> It's the only asset with no counterparty risk — no company behind it, no government promise needed. For 5,000 years, gold has preserved wealth across civilizations, wars, and collapses. That track record deserves one-third of your portfolio.
-        <br><br>
-        When <span class="tip" data-tip="When the purchasing power of money falls, making goods and services more expensive.">inflation</span> eats your savings, gold eats the inflation. When central banks print trillions, gold becomes relatively scarcer. When the geopolitical map rewrites itself, investors flee to the one thing everyone trusts. Your gold allocation will feel boring — until the day it saves you.
-      </p>
-      <div class="pillar-facts">
-        <div class="pillar-fact"><div class="fact-bullet gold"></div><span>During the 2008 crisis, gold rose 25% while stocks fell 55%</span></div>
-        <div class="pillar-fact"><div class="fact-bullet gold"></div><span>Gold has no CEO, no earnings, no quarterly report to disappoint</span></div>
-        <div class="pillar-fact"><div class="fact-bullet gold"></div><span>Simple access: GLD ETF, IAU ETF, or physical coins and bars</span></div>
-      </div>
-    </div>
-    <div class="pillar-card paper">
-      <div class="pillar-bignum">02</div>
-      <span class="pillar-tag">The Paper · Cash · 33%</span>
-      <h3 class="pillar-title">Your Loaded Gun</h3>
-      <p class="pillar-tagline">"Everyone wants cash when panic sets in. You already have it."</p>
-      <p class="pillar-body">
-        Most people keep cash because they're afraid to invest it. This strategy keeps cash because <strong>it is the investment.</strong> Cash sitting in a high-yield savings account or Treasury bill earns a real yield — often 4–5% annually — while waiting for its true purpose.
-        <br><br>
-        That purpose? <span class="tip" data-tip="Liquid capital held in reserve, ready to deploy into assets when prices collapse.">Dry powder.</span> When everything is on fire and your neighbors are panic-selling their stocks at 40% off, your cash allocation turns into your most aggressive move. You deploy it into beaten-down equities during the annual rebalance, buying the <em>most</em> when everyone else has the <em>least</em>. Cash is not cowardice. It's preparation.
-      </p>
-      <div class="pillar-facts">
-        <div class="pillar-fact"><div class="fact-bullet green"></div><span>In deflationary crashes, cash gains purchasing power in real terms</span></div>
-        <div class="pillar-fact"><div class="fact-bullet green"></div><span>T-Bills: backed by the US government, liquid within days</span></div>
-        <div class="pillar-fact"><div class="fact-bullet green"></div><span>At 5% APY, your cash earns $500/yr per $10,000 invested</span></div>
-      </div>
-    </div>
-    <div class="pillar-card equity">
-      <div class="pillar-bignum">03</div>
-      <span class="pillar-tag">The Equity · Stocks · 33%</span>
-      <h3 class="pillar-title">The Long Game</h3>
-      <p class="pillar-tagline">"Companies solve problems. That's what makes them worth owning forever."</p>
-      <p class="pillar-body">
-        The S&amp;P 500 has returned roughly <strong>10% annually</strong> since 1926. Through the Great Depression, World War II, a dozen recessions, a dot-com bust, a financial crisis, and a global pandemic — the long-run line goes up and to the right. Equities are the best wealth-creation engine ever invented.
-        <br><br>
-        The catch? The ride is violent. Stocks can — and do — drop 50%. Most people sell in terror and lock in their losses. By holding only one-third in equities, you <span class="tip" data-tip="The peak-to-trough decline during a specific period. A 50% drawdown requires a 100% gain just to break even.">mute the drawdown</span> to a survivable dip. And by rebalancing annually, you automatically buy more shares when they're cheap and fewer when they're expensive. The discipline is built in.
-      </p>
-      <div class="pillar-facts">
-        <div class="pillar-fact"><div class="fact-bullet blue"></div><span>S&amp;P 500 has never lost money over any 20-year rolling period in history</span></div>
-        <div class="pillar-fact"><div class="fact-bullet blue"></div><span>A $1 invested in US equities in 1926 is worth over $10,000 today</span></div>
-        <div class="pillar-fact"><div class="fact-bullet blue"></div><span>Low-cost access: VOO, VTI, or SPY — expense ratios under 0.05%</span></div>
-      </div>
-    </div>
-  </div>
-</section>
+        <section class="content-section">
+            <h3 class="content-header">Getting Started</h3>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <h4>Start Small</h4>
+                    <p>Focus on understanding the mechanics of your accounts with a comfortable amount before scaling your contributions.</p>
+                </div>
+                <div class="tip-item">
+                    <h4>Execute the Trade</h4>
+                    <p>Translating this strategy into reality requires navigating a brokerage interface. We've created a step-by-step walkthrough for Vanguard users.</p>
+                    <a href="vanguard-guide.html" style="display: inline-block; margin-top: 0.5rem; color: var(--equity-color); font-weight: 600; text-decoration: none;">Read the Vanguard Guide &rarr;</a>
+                </div>
+                <div class="tip-item">
+                    <h4>Ignore the Noise</h4>
+                    <p>Financial media thrives on urgency. This system is designed to be steady and unremarkable. Stick to your annual review.</p>
+                </div>
+                <div class="tip-item">
+                    <h4>Know Your Assets</h4>
+                    <p>Take the time to understand the basic function of a stock, a treasury bill, and gold. Familiarity is your best asset.</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-<!-- ALL SEASONS -->
-<section class="section">
-  <div class="section-head">
-    <div class="section-num">03</div>
-    <div class="section-title-wrap">
-      <h2 class="section-title">All Four Economic Seasons</h2>
-      <div class="section-aside">The economy cycles. Your portfolio doesn't need to predict which season is next.</div>
-    </div>
-  </div>
-  <div class="seasons-grid">
-    <div class="season-col">
-      <span class="season-glyph">📈</span>
-      <div class="season-regime">Regime 01</div>
-      <div class="season-name">Boom</div>
-      <p class="season-body">Growth is strong. Employment is high. Companies beat earnings. The market party is on — and your equity slice rides it hard.</p>
-      <div class="season-winners">
-        <div class="season-win up"><div class="w-dot blue"></div>Equity surges — ride it</div>
-        <div class="season-win up"><div class="w-dot green"></div>Cash earns high yields</div>
-        <div class="season-win neutral"><div class="w-dot gold"></div>Gold holds steady</div>
-      </div>
-    </div>
-    <div class="season-col">
-      <span class="season-glyph">🔥</span>
-      <div class="season-regime">Regime 02</div>
-      <div class="season-name">Inflation</div>
-      <p class="season-body">Your dollar buys less each month. Savings erode. Central banks scramble. Gold remembers what money is actually worth.</p>
-      <div class="season-winners">
-        <div class="season-win up"><div class="w-dot gold"></div>Gold surges — insurance activates</div>
-        <div class="season-win up"><div class="w-dot green"></div>Cash yields rise with rates</div>
-        <div class="season-win neutral"><div class="w-dot blue"></div>Equities mixed — hold firm</div>
-      </div>
-    </div>
-    <div class="season-col">
-      <span class="season-glyph">🧊</span>
-      <div class="season-regime">Regime 03</div>
-      <div class="season-name">Deflation</div>
-      <p class="season-body">Prices fall. Debt becomes crushing. Spending freezes. But your cash gains purchasing power in real terms — it quietly wins.</p>
-      <div class="season-winners">
-        <div class="season-win up"><div class="w-dot green"></div>Cash is king — real gains</div>
-        <div class="season-win neutral"><div class="w-dot gold"></div>Gold holds as uncertainty rises</div>
-        <div class="season-win down"><div class="w-dot red"></div>Equities fall — but only ⅓ exposed</div>
-      </div>
-    </div>
-    <div class="season-col">
-      <span class="season-glyph">⚡</span>
-      <div class="season-regime">Regime 04</div>
-      <div class="season-name">Crash</div>
-      <p class="season-body">Panic. Headlines. Blood in the streets. Your neighbors sell everything at the worst possible moment. You don't need to.</p>
-      <div class="season-winners">
-        <div class="season-win up"><div class="w-dot gold"></div>Gold spikes on fear demand</div>
-        <div class="season-win up"><div class="w-dot green"></div>Cash deploys into cheap assets</div>
-        <div class="season-win down"><div class="w-dot red"></div>Equities hurt — cushioned by the other ⅔</div>
-      </div>
-    </div>
-  </div>
-</section>
+    <footer>
+        <p class="disclaimer">RockPaperEquity.com does not constitute professional financial advice. Always do your own research before making financial decisions.</p>
+        <p>&copy; 2026 Rock, Paper, Equity. All rights reserved.</p>
+    </footer>
 
-<!-- BACKTEST -->
-<section class="section" id="history">
-  <div class="section-head">
-    <div class="section-num">04</div>
-    <div class="section-title-wrap">
-      <h2 class="section-title">The Backtest</h2>
-      <div class="section-aside">Conceptual benchmarks for education. The strategy doesn't win every year. It wins every decade.</div>
-    </div>
-  </div>
-  <div class="backtest-inner">
-    <div class="ctrl-row" id="controls">
-      <button class="ctrl active" onclick="updateChart('full',this)">Full History</button>
-      <button class="ctrl" onclick="updateChart('dotcom',this)">2000 Dot-Com Crash</button>
-      <button class="ctrl" onclick="updateChart('gfc',this)">2008 Financial Crisis</button>
-      <button class="ctrl" onclick="updateChart('covid',this)">2020 Pandemic</button>
-    </div>
-    <div class="stats-row">
-      <div class="stat-cell">
-        <div class="stat-label">Strategy Return</div>
-        <div class="stat-val gold" id="sRet">+310%</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-label">100% Stocks Return</div>
-        <div class="stat-val blue" id="mRet">+390%</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-label">Max Strategy Drawdown</div>
-        <div class="stat-val green" id="sDd">−15%</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-label">Max Stocks Drawdown</div>
-        <div class="stat-val red" id="mDd">−55%</div>
-      </div>
-    </div>
-    <div class="chart-box">
-      <canvas id="historyChart" style="max-height:380px"></canvas>
-    </div>
-  </div>
-</section>
-
-<!-- TRUTH BOX -->
-<section class="truth-section">
-  <div class="truth-left">
-    <h2 class="truth-hed">What This Strategy <em>Doesn't</em> Promise <truth>— and Why That's the Point.</truth></h2>
-    <div class="truth-body">
-      <p>This strategy will <strong>not</strong> make you rich overnight. If stocks surge 40% and you hold only a third of your portfolio in them, you won't capture the full gain. That's an explicit trade-off, not a bug.</p>
-      <p>The goal is to <strong>never be catastrophically wrong.</strong> You will never have a year where you lose 50% of your net worth. You will never be the person who panic-sold at the bottom and watched the recovery happen without you.</p>
-      <p>Compound interest is the most powerful force in wealth-building. The strategy works by keeping you <em>in the game long enough</em> for compounding to work its slow, relentless magic. A portfolio that earns 8% every year for 30 years <strong>outperforms</strong> one that earns 15% for 10 years and then loses 60%.</p>
-      <p>Don't optimize for the best year. Optimize for the best decade.</p>
-    </div>
-  </div>
-  <div class="truth-right">
-    <div class="truth-row">
-      <div class="truth-icon">🧠</div>
-      <div class="truth-content">
-        <h4>It Removes Emotion</h4>
-        <p>The rules are fixed. You don't decide when to buy or sell based on feelings, headlines, or your brother-in-law's tip. The protocol decides. You execute.</p>
-      </div>
-    </div>
-    <div class="truth-row">
-      <div class="truth-icon">⏱️</div>
-      <div class="truth-content">
-        <h4>20 Minutes Per Year</h4>
-        <p>One annual rebalance. That's the entire active management requirement. The rest of the year: do nothing. Seriously. Nothing.</p>
-      </div>
-    </div>
-    <div class="truth-row">
-      <div class="truth-icon">🛡️</div>
-      <div class="truth-content">
-        <h4>Built-in Buy Low, Sell High</h4>
-        <p>When you rebalance, you automatically sell the winner and buy the laggard. You sell high and buy low every single year, with zero market timing required.</p>
-      </div>
-    </div>
-    <div class="truth-row">
-      <div class="truth-icon">🌍</div>
-      <div class="truth-content">
-        <h4>Works in Any Country</h4>
-        <p>Gold is a global asset. Cash-equivalent instruments exist everywhere. Index funds are globally available. This strategy works whether you're in Dallas or Düsseldorf.</p>
-      </div>
-    </div>
-    <div class="truth-row">
-      <div class="truth-icon">💤</div>
-      <div class="truth-content">
-        <h4>The "Sleep Well" Test</h4>
-        <p>When the next market crash hits and the news is screaming, you'll check your portfolio, see a small dip, and go back to sleep. That peace of mind has real value.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- REBALANCING -->
-<section class="rebal-section" id="rebalance">
-  <div class="rebal-head">
-    <div class="rebal-overline">§ The Annual Protocol</div>
-    <h2 class="rebal-title">The <span>Rebalancing</span> Protocol</h2>
-    <p class="rebal-intro">Once a year, you spend 20 minutes "fixing" the portfolio. This single act of discipline — selling the winner, buying the laggard — is the invisible engine of the entire strategy. It forces you to buy low and sell high, automatically, every year, without thinking.</p>
-  </div>
-  <div class="rebal-steps">
-    <div class="rebal-step">
-      <div class="step-big">01</div>
-      <div class="step-tag">Step One</div>
-      <h3 class="step-title">Pick Your Day</h3>
-      <p class="step-body">Choose one date per year and <strong>calendar it.</strong> Your birthday. New Year's Day. January 15th. The date doesn't matter — the consistency does. This is the only day you are allowed to look at allocations with the intent to act. Every other day: do nothing, feel nothing, change nothing.</p>
-    </div>
-    <div class="rebal-step">
-      <div class="step-big">02</div>
-      <div class="step-tag">Step Two</div>
-      <h3 class="step-title">Find the Winner</h3>
-      <p class="step-body">Open your brokerage. If stocks had a 50% year, they might now be 42% of your portfolio instead of 33%. If gold surged during a crisis, it might be 38%. <strong>Whoever is above 33.3% is your "winner."</strong> Congratulations — you're about to sell high on it.</p>
-    </div>
-    <div class="rebal-step">
-      <div class="step-big">03</div>
-      <div class="step-tag">Step Three</div>
-      <h3 class="step-title">Reset. Done.</h3>
-      <p class="step-body">Sell enough of the winner to bring it back to 33.3%. Use those proceeds to buy the laggard until all three pillars sit at exactly one-third. You have now — <strong>without any prediction or genius</strong> — mechanically sold the most expensive asset and bought the cheapest one. Close the app. You're done for the year.</p>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-top">
-    <div class="footer-col">
-      <div class="footer-logo">Rock<em>·</em>Paper<em>·</em>Equity</div>
-      <p class="footer-tagline">The all-weather 33% portfolio strategy. Built for people who want to stop worrying about money and start living.</p>
-    </div>
-    <div class="footer-col">
-      <div class="footer-col-label">On This Page</div>
-      <ul class="footer-links">
-        <li><a href="#calculator">Allocation Calculator</a></li>
-        <li><a href="#pillars">The Three Pillars</a></li>
-        <li><a href="#history">Historical Backtest</a></li>
-        <li><a href="#rebalance">Rebalancing Protocol</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <div class="footer-col-label">The Core Idea</div>
-      <p class="footer-tagline">No prediction. No panic. No performance-chasing. Just three assets, equal thirds, and one annual check-in. Simple enough to stick to for 30 years. Robust enough to survive anything.</p>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span class="footer-copy">© 2026 RockPaperEquity.com · Strategy Series Vol. I</span>
-    <p class="footer-disclaimer">Educational purposes only. Not financial advice. Investing involves risk of loss. Historical data and backtests shown are conceptual models, not actual investment results. Always consult a certified financial planner before making investment decisions.</p>
-  </div>
-</footer>
-
-<script>
-// CALCULATOR
-const fmt = new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits:0 });
-function runCalc() {
-  const v = parseFloat(document.getElementById('totalAmt').value) || 0;
-  const s = v / 3;
-  document.getElementById('resGold').textContent = fmt.format(s);
-  document.getElementById('resCash').textContent = fmt.format(s);
-  document.getElementById('resEquity').textContent = fmt.format(s);
-}
-
-// DONUT
-const dCtx = document.getElementById('donutChart').getContext('2d');
-new Chart(dCtx, {
-  type:'doughnut',
-  data:{
-    labels:['Gold','Cash','Stocks'],
-    datasets:[{
-      data:[33.3,33.3,33.3],
-      backgroundColor:['#d4a017','#1a7a4a','#1a3a6b'],
-      borderWidth:3,
-      borderColor:'#f5f2ec',
-      hoverOffset:6
-    }]
-  },
-  options:{
-    cutout:'72%',
-    plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}
-  }
-});
-
-// BACKTEST DATA
-const BD = {
-  full:{
-    labels:['2000','2003','2006','2008','2011','2014','2017','2020','2024'],
-    strategy:[100,122,148,158,188,228,268,305,410],
-    market:  [100, 75,130, 72,133,220,280,310,490],
-    sRet:'+310%', mRet:'+390%', sDd:'−15%', mDd:'−55%'
-  },
-  dotcom:{
-    labels:['Jan \'00','Jul \'00','Jan \'01','Jul \'01','Jan \'02','Jul \'02','Jan \'03'],
-    strategy:[100,104,107,108,110,113,118],
-    market:  [100, 87, 75, 66, 60, 52, 52],
-    sRet:'+18%', mRet:'−48%', sDd:'−6%', mDd:'−48%'
-  },
-  gfc:{
-    labels:['Oct \'07','Jan \'08','Apr \'08','Jul \'08','Oct \'08','Jan \'09','Apr \'09','Dec \'09'],
-    strategy:[100, 98, 96, 94, 91, 92, 97, 115],
-    market:  [100, 95, 84, 78, 55, 50, 58,  78],
-    sRet:'+15%', mRet:'−22%', sDd:'−9%', mDd:'−50%'
-  },
-  covid:{
-    labels:['Jan \'20','Feb \'20','Mar \'20','Apr \'20','Jun \'20','Sep \'20','Dec \'20'],
-    strategy:[100, 99, 95,100,107,110,118],
-    market:  [100, 92, 68, 80, 95, 98,115],
-    sRet:'+18%', mRet:'+15%', sDd:'−5%', mDd:'−34%'
-  }
-};
-
-const hCtx = document.getElementById('historyChart').getContext('2d');
-let myChart = new Chart(hCtx, {
-  type:'line',
-  data:{
-    labels: BD.full.labels,
-    datasets:[
-      {
-        label:'33/33/33 Strategy',
-        data: BD.full.strategy,
-        borderColor:'#d4a017',
-        backgroundColor:'rgba(212,160,23,0.07)',
-        fill:true, tension:0.4, borderWidth:2.5,
-        pointRadius:4, pointBackgroundColor:'#d4a017', pointBorderColor:'#f5f2ec', pointBorderWidth:2
-      },
-      {
-        label:'100% Stocks',
-        data: BD.full.market,
-        borderColor:'#1a3a6b',
-        backgroundColor:'transparent',
-        fill:false, tension:0.4, borderWidth:2,
-        borderDash:[6,4],
-        pointRadius:4, pointBackgroundColor:'#1a3a6b', pointBorderColor:'#f5f2ec', pointBorderWidth:2
-      }
-    ]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{position:'top', labels:{color:'#6b6560', font:{family:'Martian Mono', size:11}, boxWidth:14, padding:20}},
-      tooltip:{mode:'index', intersect:false}
-    },
-    scales:{
-      y:{grid:{color:'rgba(0,0,0,0.05)'}, ticks:{color:'#6b6560', font:{family:'Martian Mono', size:10}}, border:{display:false}},
-      x:{grid:{display:false}, ticks:{color:'#6b6560', font:{family:'Martian Mono', size:10}}, border:{color:'rgba(0,0,0,0.15)'}}
-    }
-  }
-});
-
-function updateChart(period, btn) {
-  document.querySelectorAll('.ctrl').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const d = BD[period];
-  myChart.data.labels = d.labels;
-  myChart.data.datasets[0].data = d.strategy;
-  myChart.data.datasets[1].data = d.market;
-  myChart.update();
-  document.getElementById('sRet').textContent = d.sRet;
-  document.getElementById('mRet').textContent = d.mRet;
-  document.getElementById('sDd').textContent = d.sDd;
-  document.getElementById('mDd').textContent = d.mDd;
-}
-
-runCalc();
-</script>
 </body>
 </html>

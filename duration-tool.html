@@ -259,7 +259,7 @@
                 
                 <p class="ticker-instruction">1. Check the live rates on the table below.</p>
                 
-                <!-- Live TradingView Market Data Table (TVC Symbols) -->
+                <!-- Live TradingView Market Data Table (Raw Symbols) -->
                 <div class="live-ticker-container">
                     <div class="tradingview-widget-container">
                         <div class="tradingview-widget-container__widget"></div>
@@ -272,14 +272,14 @@
                             "name": "US Treasury Yield Curve",
                             "originalName": "Bonds",
                             "symbols": [
-                              { "name": "TVC:US01MY", "displayName": "1 Month" },
-                              { "name": "TVC:US03MY", "displayName": "3 Month" },
-                              { "name": "TVC:US06MY", "displayName": "6 Month" },
-                              { "name": "TVC:US01Y", "displayName": "1 Year" },
-                              { "name": "TVC:US02Y", "displayName": "2 Year" },
-                              { "name": "TVC:US03Y", "displayName": "3 Year" },
-                              { "name": "TVC:US05Y", "displayName": "5 Year" },
-                              { "name": "TVC:US10Y", "displayName": "10 Year" }
+                              { "name": "US01MY", "displayName": "1 Month" },
+                              { "name": "US03MY", "displayName": "3 Month" },
+                              { "name": "US06MY", "displayName": "6 Month" },
+                              { "name": "US01Y", "displayName": "1 Year" },
+                              { "name": "US02Y", "displayName": "2 Year" },
+                              { "name": "US03Y", "displayName": "3 Year" },
+                              { "name": "US05Y", "displayName": "5 Year" },
+                              { "name": "US10Y", "displayName": "10 Year" }
                             ]
                           }
                         ],
@@ -351,14 +351,14 @@
 
     <script>
         const MATURITIES = [
-            { id: '1mo', label: '1 Month', years: 0, default: 5.30 },
-            { id: '3mo', label: '3 Month', years: 0.25, default: 5.35 },
-            { id: '6mo', label: '6 Month', years: 0.5, default: 5.38 },
-            { id: '1yr', label: '1 Year', years: 1.0, default: 5.15 },
-            { id: '2yr', label: '2 Year', years: 2.0, default: 4.85 },
-            { id: '3yr', label: '3 Year', years: 3.0, default: 4.60 },
-            { id: '5yr', label: '5 Year', years: 5.0, default: 4.45 },
-            { id: '10yr', label: '10 Year', years: 10.0, default: 4.40 }
+            { id: '1mo', label: '1 Month', years: 0, default: 0 },
+            { id: '3mo', label: '3 Month', years: 0.25, default: 0 },
+            { id: '6mo', label: '6 Month', years: 0.5, default: 0 },
+            { id: '1yr', label: '1 Year', years: 1.0, default: 0 },
+            { id: '2yr', label: '2 Year', years: 2.0, default: 0 },
+            { id: '3yr', label: '3 Year', years: 3.0, default: 0 },
+            { id: '5yr', label: '5 Year', years: 5.0, default: 0 },
+            { id: '10yr', label: '10 Year', years: 10.0, default: 0 }
         ];
 
         const BASIS_POINT_RULE = 0.20; 
