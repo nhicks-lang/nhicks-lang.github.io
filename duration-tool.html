@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasury Duration Tool | Rock, Paper, Equity</title>
+    <meta name="description" content="A tool to calculate the optimal treasury duration using the 20 basis point rule.">
+    <style>
+        :root {
+            --rock-color: #d4af37;  
+            --paper-color: #2e7d32; 
+            --equity-color: #1565c0;
+            --bg-color: #fafafa;
+            --text-main: #202124;
+            --text-light: #5f6368;
+            --surface-color: #ffffff;
+            --border-color: #e0e0e0;
+            --highlight-bg: #e8f5e9;
+            --highlight-border: #4caf50;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav / Header Section */
+        header {
+            background-color: var(--surface-color);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #111;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            margin: 0 0 1rem 0;
+            color: #111;
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 650px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1100px; 
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Main Layout */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        @media (max-width: 850px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Panels */
+        .panel {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #111;
+            border-bottom: 2px solid var(--paper-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Forms & Inputs */
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .input-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .input-label {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .input-subtext {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            width: 80px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-align: right;
+            padding-right: 1.5rem;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--paper-color);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+
+        .percent-symbol {
+            position: absolute;
+            right: 10px;
+            color: var(--text-light);
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--paper-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn:hover {
+            background-color: #1b5e20;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--bg-color);
+        }
+
+        /* Results Display */
+        .result-box {
+            background-color: var(--highlight-bg);
+            border: 1px solid var(--highlight-border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .result-box h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--paper-color);
+            font-size: 1.25rem;
+        }
+
+        .result-box .best-duration {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #111;
+            margin: 0;
+        }
+
+        /* Status / Error text */
+        #api-status {
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 0.5rem;
+            color: var(--text-light);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        td.text-right, th.text-right {
+            text-align: right;
+        }
+
+        .optimal-row {
+            background-color: var(--highlight-bg);
+            font-weight: 600;
+        }
+
+        .negative-val { color: #d32f2f; }
+        .positive-val { color: #2e7d32; }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background-color: var(--surface-color);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-link">&larr; Back to Strategy</a>
+        <h1>Treasury Duration Tool</h1>
+        <p class="subtitle">Calculate whether the yield curve justifies locking up your cash, based on the 20 basis point (0.20%) heuristic.</p>
+    </header>
+
+    <main class="container">
+        
+        <div class="layout-grid">
+            
+            <!-- Left Column: Data & Inputs -->
+            <div class="panel">
+                <h2 class="panel-title">Yield Curve Data</h2>
+                <p style="font-size: 0.95rem; color: var(--text-light); margin-top: 0;">Enter current Treasury yields manually, or fetch the latest end-of-day data automatically from the U.S. Treasury.</p>
+
+                <div id="inputs-container">
+                    <!-- JavaScript will populate inputs here to keep HTML clean -->
+                </div>
+
+                <button class="btn" onclick="calculateDurations()">Calculate Strategy</button>
+                <button class="btn btn-outline" onclick="fetchTreasuryData()">📥 Fetch Live U.S. Treasury Data</button>
+                <div id="api-status">Ready.</div>
+            </div>
+
+            <!-- Right Column: Results & Explanation -->
+            <div class="panel">
+                <h2 class="panel-title">Analysis</h2>
+                
+                <div id="result-container" style="display: none;">
+                    <div class="result-box">
+                        <h3>Optimal Duration</h3>
+                        <p class="best-duration" id="best-duration-display">--</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; color: var(--text-main);" id="best-duration-subtext"></p>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Maturity</th>
+                                    <th class="text-right">Actual</th>
+                                    <th class="text-right">Required</th>
+                                    <th class="text-right">Premium</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JS inserts rows here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="instruction-container">
+                    <h4 style="margin-top: 0;">How it works:</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-light);">
+                        The tool establishes the 1-Month Treasury yield as the baseline (0 years duration). 
+                    </p>
+                    <p style="font-size: 0.95rem; color: var(--text-light);">
+                        Before extending your duration further out the yield curve, the market must compensate you with at least a <strong>0.20% premium in yield for each additional year</strong> your money is locked up. 
+                    </p>
+                    <p style="font-size: 0.95rem; color: var(--text-light);">
+                        If a longer duration offers a higher premium than required, it becomes the optimal choice. If no durations meet the required premium, the optimal strategy is to stay at the baseline (1 Month) and keep your cash highly liquid.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>RockPaperEquity.com does not constitute professional financial advice. Always do your own research.</p>
+        <p>Market data provided by the official API at FiscalData.Treasury.gov.</p>
+    </footer>
+
+    <script>
+        // Configuration mapping maturities to mathematical years
+        // Note: 1 Month is set to 0 years as the baseline metric
+        const MATURITIES = [
+            { id: '1mo', label: '1 Month', years: 0, api_key: 'bc_1month', default: 5.30 },
+            { id: '3mo', label: '3 Month', years: 0.25, api_key: 'bc_3month', default: 5.35 },
+            { id: '6mo', label: '6 Month', years: 0.5, api_key: 'bc_6month', default: 5.38 },
+            { id: '1yr', label: '1 Year', years: 1.0, api_key: 'bc_1year', default: 5.15 },
+            { id: '2yr', label: '2 Year', years: 2.0, api_key: 'bc_2year', default: 4.85 },
+            { id: '3yr', label: '3 Year', years: 3.0, api_key: 'bc_3year', default: 4.60 },
+            { id: '5yr', label: '5 Year', years: 5.0, api_key: 'bc_5year', default: 4.45 },
+            { id: '10yr', label: '10 Year', years: 10.0, api_key: 'bc_10year', default: 4.40 }
+        ];
+
+        const BASIS_POINT_RULE = 0.20; // 20 basis points per year
+
+        // Render input fields on page load
+        function renderInputs() {
+            const container = document.getElementById('inputs-container');
+            MATURITIES.forEach(mat => {
+                const html = `
+                    <div class="input-group">
+                        <label class="input-label" for="input-${mat.id}">
+                            ${mat.label} 
+                            <span class="input-subtext">${mat.years === 0 ? '(Baseline: 0 Yrs)' : `(${mat.years} Yrs)`}</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="input-${mat.id}" step="0.01" value="${mat.default.toFixed(2)}">
+                            <span class="percent-symbol">%</span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // Fetch Data from US Treasury API
+        async function fetchTreasuryData() {
+            const statusText = document.getElementById('api-status');
+            statusText.style.color = 'var(--text-main)';
+            statusText.innerText = 'Fetching latest data from U.S. Treasury...';
+
+            try {
+                // Fetch the single most recent day's yield curve
+                const url = 'https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/yield_curve?sort=-record_date&page[size]=1';
+                const response = await fetch(url);
+                const json = await response.json();
+
+                if (json.data && json.data.length > 0) {
+                    const latestData = json.data[0];
+                    const recordDate = new Date(latestData.record_date).toLocaleDateString();
+
+                    // Populate fields
+                    MATURITIES.forEach(mat => {
+                        const val = latestData[mat.api_key];
+                        if (val) {
+                            document.getElementById(`input-${mat.id}`).value = parseFloat(val).toFixed(2);
+                        }
+                    });
+
+                    statusText.style.color = 'var(--paper-color)';
+                    statusText.innerText = `Success: Loaded yield curve for ${recordDate}`;
+                    
+                    // Auto-calculate after fetch
+                    calculateDurations();
+                } else {
+                    throw new Error("No data returned from API.");
+                }
+
+            } catch (error) {
+                statusText.style.color = '#d32f2f';
+                statusText.innerText = 'Error fetching data. Treasury API might be temporarily down. You can enter values manually.';
+                console.error(error);
+            }
+        }
+
+        // Perform the mathematical analysis
+        function calculateDurations() {
+            const results = [];
+            
+            // Get baseline yield (1 Month / 0 Years)
+            const baseYieldInput = document.getElementById(`input-${MATURITIES[0].id}`).value;
+            const baseYield = parseFloat(baseYieldInput);
+
+            if (isNaN(baseYield)) {
+                alert("Please ensure the 1 Month baseline yield is entered.");
+                return;
+            }
+
+            let bestMaturity = MATURITIES[0];
+            let maxPremium = 0; // Starts at 0, representing the baseline
+
+            MATURITIES.forEach(mat => {
+                const actualYield = parseFloat(document.getElementById(`input-${mat.id}`).value) || 0;
+                
+                // Formula: Baseline + (Years * 0.20)
+                const requiredYield = baseYield + (mat.years * BASIS_POINT_RULE);
+                const premium = actualYield - requiredYield;
+
+                results.push({
+                    ...mat,
+                    actualYield,
+                    requiredYield,
+                    premium
+                });
+
+                // Update best if premium is strictly higher than previous max
+                if (premium > maxPremium) {
+                    maxPremium = premium;
+                    bestMaturity = mat;
+                }
+            });
+
+            renderResults(results, bestMaturity);
+        }
+
+        // Render the results into the UI table
+        function renderResults(results, bestMaturity) {
+            document.getElementById('instruction-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+
+            // Update Best Duration Box
+            document.getElementById('best-duration-display').innerText = bestMaturity.label;
+            
+            if (bestMaturity.years === 0) {
+                document.getElementById('best-duration-subtext').innerText = "The yield curve does not offer sufficient premium to extend duration. Stay liquid.";
+            } else {
+                document.getElementById('best-duration-subtext').innerText = `Extending to ${bestMaturity.label} justifies the lock-up period based on the 20bp rule.`;
+            }
+
+            // Populate Table
+            const tbody = document.querySelector('#results-table tbody');
+            tbody.innerHTML = '';
+
+            results.forEach(res => {
+                const isOptimal = res.id === bestMaturity.id;
+                const rowClass = isOptimal ? 'optimal-row' : '';
+                
+                // Formatting Premium text
+                let premiumText = res.premium.toFixed(2) + '%';
+                let premiumClass = '';
+                if (res.premium > 0 && res.years > 0) {
+                    premiumText = '+' + premiumText;
+                    premiumClass = 'positive-val';
+                } else if (res.premium < 0) {
+                    premiumClass = 'negative-val';
+                }
+
+                // Baseline required yield formatting
+                const requiredDisplay = res.years === 0 ? 'Baseline' : res.requiredYield.toFixed(2) + '%';
+                const premiumDisplay = res.years === 0 ? '--' : premiumText;
+
+                const tr = `
+                    <tr class="${rowClass}">
+                        <td>${res.label} ${isOptimal ? '⭐' : ''}</td>
+                        <td class="text-right">${res.actualYield.toFixed(2)}%</td>
+                        <td class="text-right">${requiredDisplay}</td>
+                        <td class="text-right ${premiumClass}">${premiumDisplay}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', tr);
+            });
+        }
+
+        // Initialize empty fields on load
+        window.onload = renderInputs;
+
+    </script>
+</body>
+</html>
