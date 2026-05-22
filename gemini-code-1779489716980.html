@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, Paper, Equity | A Simple Approach to Investing</title>
+    <meta name="description" content="A straightforward guide to a balanced portfolio: investing equally in gold (rock), cash (paper), and stocks (equity).">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --rock-color: #d4af37;  
+            --paper-color: #2e7d32; 
+            --equity-color: #1565c0;
+            --bg-color: #fafafa;
+            --text-main: #202124;
+            --text-light: #5f6368;
+            --surface-color: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--surface-color);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover, nav a.active {
+            color: #111;
+        }
+
+        /* Hero Section */
+        header {
+            background-color: var(--surface-color);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0 0 1rem 0;
+            color: #111;
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.35rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Introduction */
+        .intro {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 4rem auto;
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        /* The Three Pillars Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--surface-color);
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #111;
+        }
+
+        .card p {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .rock-card { border-top: 4px solid var(--rock-color); }
+        .paper-card { border-top: 4px solid var(--paper-color); }
+        .equity-card { border-top: 4px solid var(--equity-color); }
+
+        /* ETF Example Tags */
+        .etf-list {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .etf-list-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .etf-tag {
+            display: inline-block;
+            background: var(--bg-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .etf-note {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-top: 5rem;
+        }
+
+        .content-header {
+            font-size: 2.25rem;
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .panel h4 {
+            font-size: 1.25rem;
+            margin: 0 0 1rem 0;
+            color: #111;
+        }
+
+        .panel p {
+            margin: 0 0 1rem 0;
+            color: var(--text-light);
+        }
+
+        .panel p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--equity-color);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover { background-color: #0d47a1; }
+        .btn-paper { background-color: var(--paper-color); }
+        .btn-paper:hover { background-color: #1b5e20; }
+
+        /* Tables & Charts */
+        .math-table-container {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: #111;
+        }
+
+        .highlight-row {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            color: #111;
+        }
+
+        /* Tips Section */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-item {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tip-item h4 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            color: #111;
+            font-size: 1.1rem;
+        }
+
+        .tip-item p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--surface-color);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .disclaimer {
+            max-width: 600px;
+            margin: 0 auto 1rem auto;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.75rem; }
+            .panel { padding: 1.5rem; }
+            nav { flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; }
+            .chart-container { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="active">The Strategy</a>
+        <a href="duration-tool.html">Duration Calculator</a>
+        <a href="vanguard-guide.html">Vanguard Guide</a>
+    </nav>
+
+    <header>
+        <h1>Rock, Paper, Equity</h1>
+        <p class="subtitle">A straightforward, systematic approach to balancing your portfolio.</p>
+    </header>
+
+    <main class="container">
+        <div class="intro">
+            <p>Investing is often made more complicated than it needs to be. By breaking the financial world down into three core asset classes and allocating your funds equally among them (33.3% each), you create a resilient portfolio designed to navigate varying economic climates.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card rock-card">
+                <div class="icon">🪨</div>
+                <h2>Rock (Gold)</h2>
+                <p><strong>The anchor.</strong> Gold acts as a historic store of value. It offers stability when purchasing power is threatened by inflation or when confidence in traditional currency fluctuates.</p>
+                <div class="etf-list">
+                    <div class="etf-list-title">Fund Examples</div>
+                    <span class="etf-tag">GLDM</span>
+                    <span class="etf-tag">IAUM</span>
+                </div>
+            </div>
+
+            <div class="card paper-card">
+                <div class="icon">💵</div>
+                <h2>Paper (Cash)</h2>
+                <p><strong>The safety net.</strong> Cash, or highly liquid equivalents like short-term treasury bills, ensures you maintain a steady baseline of security and provides a buffer during market downturns.</p>
+                <div class="etf-list">
+                    <div class="etf-list-title">Fund Examples</div>
+                    <span class="etf-tag">SGOV</span>
+                    <span class="etf-tag">TBLL</span>
+                    <span class="etf-note">Extended Duration: <strong>iShares iBonds</strong></span>
+                </div>
+            </div>
+
+            <div class="card equity-card">
+                <div class="icon">📈</div>
+                <h2>Equity (Stocks)</h2>
+                <p><strong>The engine.</strong> Stocks represent ownership in real businesses. This is the primary growth driver of the portfolio, intended to build wealth and outpace inflation over the long term.</p>
+                <div class="etf-list">
+                    <div class="etf-list-title">Fund Examples</div>
+                    <span class="etf-tag">VOO</span>
+                    <span class="etf-tag">VTI</span>
+                    <span class="etf-tag">QQQM</span>
+                    <span class="etf-tag">QTOP</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="content-section">
+            <h3 class="content-header">The Mechanics of Equal Parts</h3>
+            <div class="philosophy-grid">
+                <div class="panel">
+                    <h4>1. Simplicity over speculation</h4>
+                    <p>Predicting the economy is nearly impossible. By holding equal parts of assets that respond differently to inflation, deflation, booms, and recessions, the portfolio is positioned to handle shifts without requiring you to guess what happens next.</p>
+                </div>
+                <div class="panel">
+                    <h4>2. Systematic balancing</h4>
+                    <p>The strategy relies on a periodic check-in, usually once a year. If one asset class outgrows the others, you reallocate your funds to restore the 33.3% split. This naturally enforces a disciplined habit of shifting capital from outperforming assets into underperforming ones.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--paper-color);">
+                    <h4>3. Optimizing the Paper Pillar</h4>
+                    <p>When holding the "Paper" portion in Treasuries, determining how long to lock up your cash can be tricky. In evidence-based investing, <strong>Larry Swedroe’s "20 basis points" rule of thumb</strong> suggests that, for taxable bonds, you should demand an additional 0.20% (20 basis points) in yield for each additional year of duration you take on.</p>
+                    <p>Begin by identifying the baseline yield at 0 years (immediate cash or the shortest maturity available). Before extending your duration further out the yield curve, ensure the market is compensating you with that minimum premium. If the premium isn't there, keep your duration short.</p>
+                    <a href="duration-tool.html" class="btn btn-paper">Open the Duration Calculator &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h3 class="content-header">Rebalancing in Action</h3>
+            <div class="panel">
+                <p>Let’s look at a practical example of how the annual check-in works. Imagine you start with $3,000, perfectly balanced. Over the next year, stocks have a massive run, gold stays flat, and cash earns a little interest.</p>
+                
+                <div class="math-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Asset Class</th>
+                                <th>Starting Balance</th>
+                                <th>Balance After 1 Year</th>
+                                <th>The Action Required</th>
+                                <th>New Balanced Portfolio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>🪨 Rock (Gold)</td>
+                                <td>$1,000</td>
+                                <td>$1,000 (25%)</td>
+                                <td>Buy $300</td>
+                                <td>$1,300 (33.3%)</td>
+                            </tr>
+                            <tr>
+                                <td>💵 Paper (Cash)</td>
+                                <td>$1,000</td>
+                                <td>$1,050 (26%)</td>
+                                <td>Buy $250</td>
+                                <td>$1,300 (33.3%)</td>
+                            </tr>
+                            <tr>
+                                <td>📈 Equity (Stocks)</td>
+                                <td>$1,000</td>
+                                <td>$1,850 (48%)</td>
+                                <td>Move $550 to other pillars</td>
+                                <td>$1,300 (33.3%)</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>Total Portfolio</td>
+                                <td>$3,000</td>
+                                <td>$3,900</td>
+                                <td>Rebalance to exactly 33.3% each</td>
+                                <td>$3,900</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-light);"><em>Notice how this mechanic naturally forced you to take profits from the asset that performed well (Stocks) and buy the assets that are currently priced lower (Gold and Cash).</em></p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h3 class="content-header">How It Compares</h3>
+            <div class="panel">
+                <p>Every investing strategy involves a trade-off between risk and reward. When comparing the "Rock, Paper, Equity" allocation to standard portfolios over historical multi-decade periods, a clear pattern emerges: you trade maximum peak growth for maximum crash protection.</p>
+                
+                <div class="math-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Portfolio Strategy</th>
+                                <th>Allocation</th>
+                                <th>Growth Potential</th>
+                                <th>Worst Historical Drops</th>
+                                <th>The Ride</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>The S&P 500</strong></td>
+                                <td>100% Stocks</td>
+                                <td>Highest (~8-10% avg)</td>
+                                <td>Severe (-40% to -50%)</td>
+                                <td>Highly Volatile</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Traditional 60/40</strong></td>
+                                <td>60% Stocks / 40% Bonds</td>
+                                <td>Moderate (~7-8% avg)</td>
+                                <td>Moderate (-20% to -30%)</td>
+                                <td>Moderate</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Harry Browne Permanent</strong></td>
+                                <td>25% Stocks / 25% Gold / 25% Cash / 25% Long-Bonds</td>
+                                <td>Lower (~5-6% avg)</td>
+                                <td>Mild-Moderate (Hit hard in 2022)</td>
+                                <td>Steady</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td><strong>Rock, Paper, Equity</strong></td>
+                                <td>33% Gold / 33% Cash / 33% Stocks</td>
+                                <td>Steady (~6-7% avg)</td>
+                                <td>Mild (-10% to -15%)</td>
+                                <td>Very Smooth</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">Surviving the "Lost Decade" ($10k Start in 1998)</h4>
+                <p style="font-size: 0.95rem; color: var(--text-light);">If you only look at the massive tech bull-run of the 2010s, 100% Equity looks untouchable. But rewind to the "Lost Decade" of the 2000s—featuring both the Dot-Com crash and the 2008 Financial Crisis. Notice how the Rock/Paper/Equity portfolio barely dropped during those crashes, allowing it to significantly outperform the S&P 500 for over 15 years.</p>
+                <p style="font-size: 0.95rem; color: var(--text-light);"><em>Notice the purple line:</em> The classic Harry Browne Permanent Portfolio also survived the 2000s beautifully, but it suffered a sharp decline in 2022. Because 25% of it was locked in Long-Term Bonds, it crashed alongside stocks when interest rates spiked. Rock/Paper/Equity avoided this by staying in highly liquid short-term Cash.</p>
+                
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                
+                <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-light);"><em>*Note: Chart represents simulated historical backtesting for educational purposes, not a guarantee of future returns. Values approximate the growth of $10,000 incorporating historical returns of the S&P 500, Spot Gold, Long-Term Bonds, and Short-Term Treasuries with annual rebalancing.</em></p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h3 class="content-header">Getting Started</h3>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <h4>Start Small</h4>
+                    <p>Focus on understanding the mechanics of your accounts with a comfortable amount before scaling your contributions.</p>
+                </div>
+                <div class="tip-item">
+                    <h4>Execute the Trade</h4>
+                    <p>Translating this strategy into reality requires navigating a brokerage interface. We've created a step-by-step walkthrough for Vanguard users.</p>
+                    <a href="vanguard-guide.html" style="display: inline-block; margin-top: 0.5rem; color: var(--equity-color); font-weight: 600; text-decoration: none;">Read the Vanguard Guide &rarr;</a>
+                </div>
+                <div class="tip-item">
+                    <h4>Ignore the Noise</h4>
+                    <p>Financial media thrives on urgency. This system is designed to be steady and unremarkable. Stick to your annual review.</p>
+                </div>
+                <div class="tip-item">
+                    <h4>Know Your Assets</h4>
+                    <p>Take the time to understand the basic function of a stock, a treasury bill, and gold. Familiarity is your best asset.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="disclaimer">RockPaperEquity.com does not constitute professional financial advice. Always do your own research before making financial decisions. If this guide helped you, the best way to say thanks is to share it with a friend who is trying to figure out their own finances.</p>
+        <p>&copy; 2026 Rock, Paper, Equity. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        
+        // Simulated Historical Data ($10k Start in 1998)
+        const years = ['1998', '2000', '2002', '2004', '2006', '2008', '2010', '2012', '2014', '2016', '2018', '2020', '2022', '2024', '2026'];
+        
+        // SP500 reflects Dot-Com crash, GFC, and massive 2010s bull run
+        const dataSP500 = [10000, 13500, 7500, 9500, 12000, 7000, 10000, 12500, 18000, 20500, 24500, 31000, 26000, 37000, 48000];
+        
+        // 60/40 dampens the falls but suffered heavily in 2022
+        const data6040 =  [10000, 12000, 9500, 11500, 13500, 10000, 12500, 14500, 17500, 19000, 21500, 25500, 21500, 26000, 31000];
+        
+        // Harry Browne Permanent (25/25/25/25) survived 2000s, lagged 2010s, dipped noticeably in 2022 due to long bonds
+        const dataHarryBrowne = [10000, 10800, 12000, 14000, 16000, 16500, 19500, 22000, 21500, 22500, 23500, 27500, 24500, 27000, 30000];
+
+        // RPE dominates the 2000s due to Gold's mega-run + high cash yields + buying stocks low. 
+        // Growth flattens in 2013-2018 when gold crashes, but survives 2022 incredibly well without long bonds.
+        const dataRPE =   [10000, 11000, 12500, 15000, 18000, 17000, 21500, 25000, 24500, 25500, 27500, 32000, 30500, 35000, 40000];
+
+        const performanceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'S&P 500 (100% Stocks)',
+                        data: dataSP500,
+                        borderColor: '#1565c0', // Equity Blue
+                        backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Traditional 60/40',
+                        data: data6040,
+                        borderColor: '#5f6368', // Neutral Grey
+                        backgroundColor: 'rgba(95, 99, 104, 0.1)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Harry Browne Permanent',
+                        data: dataHarryBrowne,
+                        borderColor: '#7b1fa2', // Distinct Purple
+                        backgroundColor: 'rgba(123, 31, 162, 0.1)',
+                        borderWidth: 2,
+                        borderDash: [2, 2],
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Rock, Paper, Equity (33/33/33)',
+                        data: dataRPE,
+                        borderColor: '#d4af37', // Rock Gold
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        borderWidth: 4,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#d4af37'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                                size: 13
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            color: '#eaeaea'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
